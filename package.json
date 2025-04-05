@@ -12,6 +12,8 @@
     "@aws-sdk/client-dynamodb": "^3.777.0",
     "@aws-sdk/lib-dynamodb": "^3.321.1",
     "@gsap/react": "^2.1.2",
+    "@gxl/epub-parser": "^2.0.4",
+    "epubjs": "^0.3.93",
     "gsap": "^3.12.7",
     "html-entities": "^2.5.5",
     "jszip": "^3.10.1",
