@@ -21,7 +21,29 @@ interface ReadingStatus {
   [member: string]: boolean;
 }
 
-export default async function ReadingPage({ params }: { params: { slug: string } }) {
+// Helper function to clean and format chapter content
+const cleanChapterContent = (content: string): string => {
+  const cleaned = content.replace(/\[(.*?)\]\(#contents\$\w+\)/g, (match, p1) => {
+    console.log(match, p1);
+
+    const title = p1
+      .trim()
+      .toUpperCase()
+      .replace(/\s+/g, "_")
+      .replace(/[^A-Z0-9_]/g, "");
+
+    return `CHAPTER_${title}`;
+  });
+
+  return cleaned;
+};
+
+// Check if paragraph is a chapter heading
+const isChapterHeading = (para: string): boolean => {
+  return para.trim().startsWith("CHAPTER_");
+};
+
+export default async function ReadingPage({ params }: { params: Promise<{ slug: string }> }) {
   // Initialize DynamoDB client
   const ddbClient = new DynamoDBClient({
     region: process.env.AWS_REGION,
@@ -32,7 +54,7 @@ export default async function ReadingPage({ params }: { params: { slug: string }
   });
   const docClient = DynamoDBDocumentClient.from(ddbClient);
 
-  const slug = await Promise.resolve(params.slug);
+  const slug = (await params).slug;
 
   try {
     const today = new Date().toLocaleDateString("en-CA");
@@ -41,7 +63,7 @@ export default async function ReadingPage({ params }: { params: { slug: string }
       TableName: "ReadingGroups",
       KeyConditionExpression: "id = :id",
       ExpressionAttributeValues: {
-        ":id": { S: params.slug },
+        ":id": { S: slug },
       },
     }) as any;
 
@@ -82,7 +104,7 @@ export default async function ReadingPage({ params }: { params: { slug: string }
       readingGroupId: chapterData.Items[0].readingGroupId.S!,
       title: chapterData.Items[0].title.S!,
       date: chapterData.Items[0].date.S!,
-      content: chapterData.Items[0].content.S!,
+      content: cleanChapterContent(chapterData.Items[0].content.S!),
     };
 
     // 3. Fetch reading status for this chapter
@@ -103,31 +125,45 @@ export default async function ReadingPage({ params }: { params: { slug: string }
 
     return (
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="rounded-xl bg-white p-6 shadow-sm sm:p-8">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-800">{readingGroup.bookTitle}</h1>
-            <p className="text-gray-500">{chapter.date}</p>
-          </div>
-
-          <div className="mb-6">
-            <h2 className="border-b border-gray-100 pb-2 text-xl font-bold capitalize text-gray-800">
-              {chapter.title}
-            </h2>
-          </div>
-
-          <div className="prose prose-lg max-w-none text-gray-700">
-            {chapter.content.split("\n").map((para, i) => (
-              <p key={i} className="my-4 leading-relaxed">
-                {para}
-              </p>
-            ))}
-          </div>
-
+        <div className="rounded-xl bg-[var(--background)] p-6 shadow-sm sm:p-8">
           <MarkAsReadButtons
             chapterId={chapter.id}
             members={readingGroup.members}
             initialStatus={readStatus}
           />
+
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-[var(--foreground)]">
+              {readingGroup.bookTitle}
+            </h1>
+            <p className="text-[var(--foreground)] opacity-60">{chapter.date}</p>
+          </div>
+
+          <div className="prose prose-lg max-w-none text-[var(--foreground)]">
+            {chapter.content.split("\n").map((para, i) => {
+              if (!para.trim()) return null;
+
+              const formattedPara = isChapterHeading(para)
+                ? para.replace(/CHAPTER_/, "").toLocaleLowerCase()
+                : para;
+
+              return (
+                <p
+                  key={i}
+                  className={`leading-relaxed ${
+                    isChapterHeading(para)
+                      ? "mt-40 flex w-full flex-row border-b border-gray-200 pb-2 text-xl font-bold capitalize text-[var(--foreground)] first:mt-4"
+                      : "my-4 opacity-80"
+                  }`}
+                >
+                  {formattedPara}
+                  {isChapterHeading(para) && (
+                    <span className="ml-auto mt-auto text-xs uppercase opacity-40">chapter</span>
+                  )}
+                </p>
+              );
+            })}
+          </div>
         </div>
       </div>
     );

@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 const { parseEpub } = require("@gxl/epub-parser");
-const { decode } = require("html-entities");
 
 async function processEPUB(filePath) {
   try {
@@ -14,7 +15,7 @@ async function processEPUB(filePath) {
 
       return {
         id: section.id,
-        title: epubObj.structure[i] ? epubObj.structure[i].name : "Untitled Chapter",
+        title: epubObj.structure[i - 1] ? epubObj.structure[i - 1].name : "Untitled Chapter",
         content,
       };
     });

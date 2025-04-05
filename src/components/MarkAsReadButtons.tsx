@@ -39,7 +39,7 @@ export default function MarkAsReadButtons({
 
   return (
     <div className="mt-8">
-      <h3 className="mb-4 text-lg font-medium text-gray-700">Mark as read/unread:</h3>
+      <h3 className="mb-4 text-lg font-medium text-[var(--foreground)]">Mark as read/unread:</h3>
       <div className="flex flex-wrap gap-3">
         {members.map((member) => (
           <button

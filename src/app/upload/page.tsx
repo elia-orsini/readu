@@ -1,13 +1,31 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+
+interface Chapter {
+  id: string;
+  title: string;
+  content: string;
+  length: number; // in characters
+}
+
+interface ReadingSegment {
+  id: string;
+  title: string;
+  content: string;
+  date: string;
+  chapterTitles: string[];
+  estimatedMinutes: number;
+}
 
 export default function UploadPage() {
   const [title, setTitle] = useState("");
-  const [chapters, setChapters] = useState<any[]>([]);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
   const [selectedChapters, setSelectedChapters] = useState<Set<string>>(new Set());
   const [members, setMembers] = useState<string[]>([""]);
   const [loading, setLoading] = useState(false);
+  const [dailyMinutes, setDailyMinutes] = useState<number>(30);
+  const [charsPerMinute, setCharsPerMinute] = useState<number>(1000); // Average reading speed
   const router = useRouter();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +44,7 @@ export default function UploadPage() {
         const { title, chapters } = await response.json();
         setTitle(title);
         setChapters(chapters);
-        setSelectedChapters(new Set(chapters.map((c: any) => c.id)));
+        setSelectedChapters(new Set(chapters.map((c: Chapter) => c.id)));
       } finally {
         setLoading(false);
       }
@@ -50,18 +68,120 @@ export default function UploadPage() {
     setMembers(newMembers);
   };
 
+  const createSegments = (): ReadingSegment[] => {
+    if (!chapters.length) return [];
+
+    const filteredChapters = chapters
+      .filter((c) => selectedChapters.has(c.id))
+      .map((c) => ({
+        ...c,
+        paragraphs: c.content.split("\n\n").filter((p) => p.trim().length > 0),
+        estimatedMinutes: Math.ceil(c.length / charsPerMinute),
+      }));
+
+    if (!filteredChapters.length) return [];
+
+    const segments: ReadingSegment[] = [];
+    let currentDay = 0;
+    let currentSegment: ReadingSegment | null = null;
+    let remainingDailyMinutes = dailyMinutes;
+    let currentChapterTitles = new Set<string>();
+
+    for (const chapter of filteredChapters) {
+      // Track current chapter title
+      currentChapterTitles.add(chapter.title);
+
+      // Process each paragraph in the chapter
+      for (let i = 0; i < chapter.paragraphs.length; i++) {
+        const paragraph = chapter.paragraphs[i];
+        const paragraphMinutes = Math.ceil((paragraph.length / charsPerMinute) * 100) / 100;
+
+        // If we don't have a current segment or this paragraph would exceed remaining time
+        if (!currentSegment || paragraphMinutes > remainingDailyMinutes) {
+          // Push the current segment if it exists
+          if (currentSegment) {
+            segments.push(currentSegment);
+            currentDay++;
+            remainingDailyMinutes = dailyMinutes;
+            currentChapterTitles = new Set([chapter.title]); // Reset for new segment
+          }
+
+          // Start new segment
+          currentSegment = {
+            id: `day-${currentDay}-${chapter.id}-${i}`,
+            title: `Day ${segments.length + 1}`,
+            content: paragraph,
+            date: new Date(Date.now() + currentDay * 86400000).toISOString().split("T")[0],
+            chapterTitles: Array.from(currentChapterTitles),
+            estimatedMinutes: paragraphMinutes,
+          };
+          remainingDailyMinutes -= paragraphMinutes;
+        } else {
+          // Add to current segment
+          currentSegment.content += "\n\n" + paragraph;
+          currentSegment.estimatedMinutes += paragraphMinutes;
+          currentSegment.chapterTitles = Array.from(
+            new Set([...currentSegment.chapterTitles, ...currentChapterTitles])
+          );
+          remainingDailyMinutes -= paragraphMinutes;
+        }
+      }
+    }
+
+    // Push the last segment if it exists
+    if (currentSegment) {
+      segments.push(currentSegment);
+    }
+
+    // Now try to combine short segments
+    const optimizedSegments: ReadingSegment[] = [];
+    let currentOptimizedSegment: ReadingSegment | null = null;
+
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
+
+      if (segment.estimatedMinutes < dailyMinutes / 2) {
+        if (
+          currentOptimizedSegment &&
+          currentOptimizedSegment.estimatedMinutes + segment.estimatedMinutes <= dailyMinutes * 1.2
+        ) {
+          // Combine with previous segment
+          currentOptimizedSegment.content +=
+            "\n\n--- " + segment.chapterTitles.join(" + ") + " ---\n\n" + segment.content;
+          currentOptimizedSegment.chapterTitles = Array.from(
+            new Set([...currentOptimizedSegment.chapterTitles, ...segment.chapterTitles])
+          );
+          currentOptimizedSegment.estimatedMinutes += segment.estimatedMinutes;
+        } else {
+          // Start new optimized segment
+          if (currentOptimizedSegment) optimizedSegments.push(currentOptimizedSegment);
+          currentOptimizedSegment = { ...segment };
+        }
+      } else {
+        if (currentOptimizedSegment) optimizedSegments.push(currentOptimizedSegment);
+        optimizedSegments.push(segment);
+        currentOptimizedSegment = null;
+      }
+    }
+
+    if (currentOptimizedSegment) {
+      optimizedSegments.push(currentOptimizedSegment);
+    }
+
+    // Finalize with consecutive day numbers and dates
+    return optimizedSegments.map((segment, index) => ({
+      ...segment,
+      title: `Day ${index + 1}`,
+      date: new Date(Date.now() + index * 86400000).toISOString().split("T")[0],
+      // Ensure chapter titles are unique
+      chapterTitles: Array.from(new Set(segment.chapterTitles)),
+    }));
+  };
+
   const createReadingPlan = async () => {
     setLoading(true);
     const readingGroupId = crypto.randomUUID();
-    const filteredChapters = chapters.filter((c) => selectedChapters.has(c.id));
-
-    // Assign dates starting from today
-    const datedChapters = filteredChapters.map((chapter, i) => ({
-      ...chapter,
-      id: crypto.randomUUID(),
-      readingGroupId,
-      date: new Date(Date.now() + i * 86400000).toISOString().split("T")[0],
-    }));
+    const segments = createSegments();
 
     try {
       // Create reading group
@@ -72,15 +192,16 @@ export default function UploadPage() {
           id: readingGroupId,
           members: members.filter((m) => m !== "" && m.trim()),
           bookTitle: title,
+          dailyMinutes,
         }),
       });
 
-      // Upload chapters
-      await fetch("/api/upload-chapters", {
+      // Upload segments
+      await fetch("/api/upload-segments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          chapters: datedChapters,
+          segments,
           readingGroupId,
         }),
       });
@@ -91,9 +212,15 @@ export default function UploadPage() {
     }
   };
 
+  // Preview the reading plan
+  const [previewSegments, setPreviewSegments] = useState<ReadingSegment[]>([]);
+  useEffect(() => {
+    setPreviewSegments(createSegments());
+  }, [chapters, selectedChapters, dailyMinutes, charsPerMinute]);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="rounded-xl bg-white p-6 shadow-sm sm:p-8">
           <h1 className="mb-6 text-3xl font-bold text-gray-900">Create A Reading Plan</h1>
 
@@ -172,6 +299,57 @@ export default function UploadPage() {
                 <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
               </div>
 
+              {/* Reading Settings */}
+              <div className="space-y-4">
+                <h3 className="text-base font-medium text-gray-700">Reading Settings</h3>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div>
+                    <label
+                      htmlFor="dailyMinutes"
+                      className="mb-1 block text-sm font-medium text-gray-700"
+                    >
+                      Minutes per day
+                    </label>
+                    <input
+                      type="number"
+                      id="dailyMinutes"
+                      min="10"
+                      max="240"
+                      value={dailyMinutes}
+                      onChange={(e) => setDailyMinutes(parseInt(e.target.value) || 30)}
+                      className="block w-full rounded-md border-gray-200 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="charsPerMinute"
+                      className="mb-1 block text-sm font-medium text-gray-700"
+                    >
+                      Reading speed (chars/min)
+                    </label>
+                    <input
+                      type="number"
+                      id="charsPerMinute"
+                      min="100"
+                      max="500"
+                      value={charsPerMinute}
+                      onChange={(e) => setCharsPerMinute(parseInt(e.target.value) || 200)}
+                      className="block w-full rounded-md border-gray-200 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div className="text-sm text-gray-500">
+                    Estimated reading time:{" "}
+                    {Math.ceil((previewSegments.length * dailyMinutes) / 60)} hours total
+                  </div>
+
+                  <div className="hidden text-sm text-gray-500 sm:block">
+                    1000 chars/min is the average speed. Don&apos;t change it if you are not sure!
+                  </div>
+                </div>
+              </div>
+
               {/* Members Section */}
               <div className="space-y-4">
                 <h3 className="text-base font-medium text-gray-700">Reading Members</h3>
@@ -223,7 +401,10 @@ export default function UploadPage() {
                             onChange={() => toggleChapter(chapter.id)}
                             className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                           />
-                          <span className="block text-sm text-gray-700">{chapter.title}</span>
+                          <span className="block text-sm text-gray-700">
+                            {chapter.title} (~{Math.ceil(chapter.content.length / charsPerMinute)}{" "}
+                            min)
+                          </span>
                         </label>
                       </li>
                     ))}
@@ -231,11 +412,50 @@ export default function UploadPage() {
                 </div>
               </div>
 
+              {/* Reading Plan Preview */}
+              {previewSegments.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-base font-medium text-gray-700">Reading Plan Preview</h3>
+                  <div className="overflow-hidden rounded-lg border border-gray-200">
+                    <ul className="max-h-96 divide-y divide-gray-200 overflow-y-auto">
+                      {previewSegments.map((segment, index) => (
+                        <li key={segment.id} className={`px-4 py-3 hover:bg-gray-50`}>
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0 pt-1">
+                              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-sm font-medium text-gray-700">
+                                {index + 1}
+                              </div>
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-900">{segment.title}</p>
+                              <p className="text-xs text-gray-500">
+                                {segment.date} • ~
+                                {Math.ceil(segment.content.length / charsPerMinute)} min
+                              </p>
+
+                              {segment.chapterTitles.length ? (
+                                <div className="mt-2 text-xs font-semibold text-blue-600">
+                                  Chapters: {segment.chapterTitles.join(", ")}
+                                </div>
+                              ) : (
+                                <div className="mt-2 text-xs font-semibold text-gray-500">
+                                  No new chapters
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+
               {/* Submit Button */}
               <div className="pt-4">
                 <button
                   onClick={createReadingPlan}
-                  disabled={loading}
+                  disabled={loading || previewSegments.length === 0}
                   className="inline-flex w-full justify-center rounded-md border border-transparent bg-gray-900 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 sm:w-auto sm:text-sm"
                 >
                   {loading ? (
@@ -263,7 +483,7 @@ export default function UploadPage() {
                       Creating...
                     </>
                   ) : (
-                    "Create A Reading Plan"
+                    "Create Reading Plan"
                   )}
                 </button>
               </div>

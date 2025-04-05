@@ -23,16 +23,17 @@ export async function createReadingGroup(group: {
   await docClient.send(command);
 }
 
-export async function uploadChapter(chapter: {
+export async function uploadChapter(segment: {
   id: string;
-  readingGroupId: string;
   title: string;
-  date: string;
   content: string;
+  date: string;
+  chapterTitles: string[];
+  estimatedMinutes: number;
 }) {
   const command = new PutCommand({
     TableName: "ReadingChapters",
-    Item: chapter,
+    Item: segment,
   }) as any;
   await docClient.send(command);
 }
