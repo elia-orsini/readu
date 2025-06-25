@@ -90,46 +90,76 @@ export default function UploadPage() {
     const segments: ReadingSegment[] = [];
     let currentDay = 0;
     let currentSegment: ReadingSegment | null = null;
-    let remainingDailyMinutes = dailyMinutes;
-    let currentChapterTitles = new Set<string>();
 
     for (const chapter of filteredChapters) {
-      // Track current chapter title
-      currentChapterTitles.add(chapter.title);
+      const chapterMinutes = Math.ceil(chapter.content.length / charsPerMinute);
 
-      // Process each paragraph in the chapter
-      for (let i = 0; i < chapter.paragraphs.length; i++) {
-        const paragraph = chapter.paragraphs[i];
-        const paragraphMinutes = Math.ceil((paragraph.length / charsPerMinute) * 100) / 100;
+      // Case 1: Chapter fits completely in remaining daily time
+      if (
+        currentSegment &&
+        currentSegment.estimatedMinutes + chapterMinutes <= dailyMinutes * 1.2
+      ) {
+        // Add to current segment
+        currentSegment.content += "\n\n" + chapter.content;
+        currentSegment.estimatedMinutes += chapterMinutes;
+        currentSegment.chapterTitles.push(chapter.title);
+      }
+      // Case 2: Chapter is too big and needs its own segment(s)
+      else {
+        // Push current segment if exists
+        if (currentSegment) {
+          segments.push(currentSegment);
+          currentDay++;
+        }
 
-        // If we don't have a current segment or this paragraph would exceed remaining time
-        if (!currentSegment || paragraphMinutes > remainingDailyMinutes) {
-          // Push the current segment if it exists
-          if (currentSegment) {
-            segments.push(currentSegment);
-            currentDay++;
-            remainingDailyMinutes = dailyMinutes;
-            currentChapterTitles = new Set([chapter.title]); // Reset for new segment
+        // Create new segment for this chapter
+        currentSegment = {
+          id: `day-${currentDay}-${chapter.id}`,
+          title: `Day ${currentDay + 1}`,
+          content: chapter.content,
+          date: new Date(Date.now() + currentDay * 86400000).toISOString().split("T")[0],
+          chapterTitles: [chapter.title],
+          estimatedMinutes: chapterMinutes,
+        };
+
+        // If chapter is very long, split at natural breaks
+        if (chapterMinutes > dailyMinutes * 1.5) {
+          // Split into paragraphs but keep headings with their content
+          const paragraphs = chapter.content.split(/\n\s*\n/);
+          let currentContent = "";
+          let currentEstimate = 0;
+
+          for (let i = 0; i < paragraphs.length; i++) {
+            const para = paragraphs[i];
+            const paraMinutes = Math.ceil(para.length / charsPerMinute);
+
+            // If adding this paragraph would exceed daily limit, push current segment
+            if (currentContent && currentEstimate + paraMinutes > dailyMinutes) {
+              segments.push({
+                ...currentSegment,
+                content: currentContent,
+                estimatedMinutes: currentEstimate,
+              });
+              currentDay++;
+              currentContent = "";
+              currentEstimate = 0;
+            }
+
+            // Add paragraph to current content
+            currentContent += (currentContent ? "\n\n" : "") + para;
+            currentEstimate += paraMinutes;
           }
 
-          // Start new segment
-          currentSegment = {
-            id: `day-${currentDay}-${chapter.id}-${i}`,
-            title: `Day ${segments.length + 1}`,
-            content: paragraph,
-            date: new Date(Date.now() + currentDay * 86400000).toISOString().split("T")[0],
-            chapterTitles: Array.from(currentChapterTitles),
-            estimatedMinutes: paragraphMinutes,
-          };
-          remainingDailyMinutes -= paragraphMinutes;
-        } else {
-          // Add to current segment
-          currentSegment.content += "\n\n" + paragraph;
-          currentSegment.estimatedMinutes += paragraphMinutes;
-          currentSegment.chapterTitles = Array.from(
-            new Set([...currentSegment.chapterTitles, ...currentChapterTitles])
-          );
-          remainingDailyMinutes -= paragraphMinutes;
+          // Push remaining content
+          if (currentContent) {
+            segments.push({
+              ...currentSegment,
+              content: currentContent,
+              estimatedMinutes: currentEstimate,
+            });
+            currentDay++;
+            currentSegment = null;
+          }
         }
       }
     }
@@ -139,48 +169,11 @@ export default function UploadPage() {
       segments.push(currentSegment);
     }
 
-    // Now try to combine short segments
-    const optimizedSegments: ReadingSegment[] = [];
-    let currentOptimizedSegment: ReadingSegment | null = null;
-
-    for (let i = 0; i < segments.length; i++) {
-      const segment = segments[i];
-
-      if (segment.estimatedMinutes < dailyMinutes / 2) {
-        if (
-          currentOptimizedSegment &&
-          currentOptimizedSegment.estimatedMinutes + segment.estimatedMinutes <= dailyMinutes * 1.2
-        ) {
-          // Combine with previous segment
-          currentOptimizedSegment.content +=
-            "\n\n--- " + segment.chapterTitles.join(" + ") + " ---\n\n" + segment.content;
-          currentOptimizedSegment.chapterTitles = Array.from(
-            new Set([...currentOptimizedSegment.chapterTitles, ...segment.chapterTitles])
-          );
-          currentOptimizedSegment.estimatedMinutes += segment.estimatedMinutes;
-        } else {
-          // Start new optimized segment
-          if (currentOptimizedSegment) optimizedSegments.push(currentOptimizedSegment);
-          currentOptimizedSegment = { ...segment };
-        }
-      } else {
-        if (currentOptimizedSegment) optimizedSegments.push(currentOptimizedSegment);
-        optimizedSegments.push(segment);
-        currentOptimizedSegment = null;
-      }
-    }
-
-    if (currentOptimizedSegment) {
-      optimizedSegments.push(currentOptimizedSegment);
-    }
-
     // Finalize with consecutive day numbers and dates
-    return optimizedSegments.map((segment, index) => ({
+    return segments.map((segment, index) => ({
       ...segment,
       title: `Day ${index + 1}`,
       date: new Date(Date.now() + index * 86400000).toISOString().split("T")[0],
-      // Ensure chapter titles are unique
-      chapterTitles: Array.from(new Set(segment.chapterTitles)),
     }));
   };
 
@@ -223,6 +216,9 @@ export default function UploadPage() {
   useEffect(() => {
     setPreviewSegments(createSegments());
   }, [chapters, selectedChapters, dailyMinutes, charsPerMinute]);
+
+  console.log(previewSegments);
+  
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -441,7 +437,7 @@ export default function UploadPage() {
 
                               {segment.chapterTitles.length ? (
                                 <div className="mt-2 text-xs font-semibold text-blue-600">
-                                  Chapters: {segment.chapterTitles.join(", ")}
+                                  {segment.chapterTitles.join(", ")}
                                 </div>
                               ) : (
                                 <div className="mt-2 text-xs font-semibold text-gray-500">

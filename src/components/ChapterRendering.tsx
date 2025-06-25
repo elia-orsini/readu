@@ -115,8 +115,6 @@ export default function ChapterRendering({
                     : "my-4 opacity-80"
                 }`}
               >
-                {/* <div dangerouslySetInnerHTML={{ __html: formattedPara }} /> */}
-
                 <ReactMarkdown rehypePlugins={[rehypeRaw]}>{formattedPara}</ReactMarkdown>
 
                 {isChapterHeading(para) && (
