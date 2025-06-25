@@ -1,3 +1,4 @@
+import ChapterRendering from "@/components/ChapterRendering";
 import MarkAsReadButtons from "@/components/MarkAsReadButtons";
 import { DynamoDBClient, QueryCommand } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
@@ -38,11 +39,6 @@ const cleanChapterContent = (content: string): string => {
   return cleaned;
 };
 
-// Check if paragraph is a chapter heading
-const isChapterHeading = (para: string): boolean => {
-  return para.trim().startsWith("CHAPTER_");
-};
-
 export default async function ReadingPage({ params }: { params: Promise<{ slug: string }> }) {
   // Initialize DynamoDB client
   const ddbClient = new DynamoDBClient({
@@ -57,8 +53,6 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
   const slug = (await params).slug;
 
   try {
-    const today = new Date().toLocaleDateString("en-CA");
-
     const groupCommand = new QueryCommand({
       TableName: "ReadingGroups",
       KeyConditionExpression: "id = :id",
@@ -80,15 +74,14 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
     const chapterCommand = new QueryCommand({
       TableName: "ReadingChapters",
       IndexName: "readingGroupId-index",
-      KeyConditionExpression: "readingGroupId = :groupId AND #date = :date",
-      ExpressionAttributeNames: { "#date": "date" },
+      KeyConditionExpression: "readingGroupId = :groupId",
       ExpressionAttributeValues: {
         ":groupId": { S: slug },
-        ":date": { S: today },
       },
     }) as any;
 
     const chapterData = (await docClient.send(chapterCommand)) as any;
+
     if (!chapterData.Items?.length) {
       return (
         <div className="flex min-h-[50vh] items-center justify-center">
@@ -125,45 +118,14 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
 
     return (
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="rounded-xl bg-[var(--background)] p-6 shadow-sm sm:p-8">
+        <div className="rounded-xl bg-[var(--background)] p-4 shadow-sm sm:p-8">
           <MarkAsReadButtons
             chapterId={chapter.id}
             members={readingGroup.members}
             initialStatus={readStatus}
           />
 
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-[var(--foreground)]">
-              {readingGroup.bookTitle}
-            </h1>
-            <p className="text-[var(--foreground)] opacity-60">{chapter.date}</p>
-          </div>
-
-          <div className="prose prose-lg max-w-none text-[var(--foreground)]">
-            {chapter.content.split("\n").map((para, i) => {
-              if (!para.trim()) return null;
-
-              const formattedPara = isChapterHeading(para)
-                ? para.replace(/CHAPTER_/, "").toLocaleLowerCase()
-                : para;
-
-              return (
-                <p
-                  key={i}
-                  className={`leading-relaxed ${
-                    isChapterHeading(para)
-                      ? "mt-40 flex w-full flex-row border-b border-gray-200 pb-2 text-xl font-bold capitalize text-[var(--foreground)] first:mt-4"
-                      : "my-4 opacity-80"
-                  }`}
-                >
-                  {formattedPara}
-                  {isChapterHeading(para) && (
-                    <span className="ml-auto mt-auto text-xs uppercase opacity-40">chapter</span>
-                  )}
-                </p>
-              );
-            })}
-          </div>
+          <ChapterRendering chapters={chapterData} readingGroup={readingGroup} />
         </div>
       </div>
     );

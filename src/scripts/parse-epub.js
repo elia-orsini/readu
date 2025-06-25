@@ -20,8 +20,6 @@ async function processEPUB(filePath) {
       };
     });
 
-    console.log(chapters);
-
     return { title, chapters };
   } catch (error) {
     console.error("Error processing EPUB:", error);

@@ -38,3 +38,11 @@ body {
     scrollbar-width: none; /* Firefox */
   }
 }
+
+h3 {
+  font-size: 1.1rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}

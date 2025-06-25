@@ -75,7 +75,13 @@ export default function UploadPage() {
       .filter((c) => selectedChapters.has(c.id))
       .map((c) => ({
         ...c,
-        paragraphs: c.content.split("\n\n").filter((p) => p.trim().length > 0),
+        paragraphs: c.content
+          .replace(/\[\]\(null\)[\s\n]*/g, "")
+          .replace(/\[\]\(null\)/g, "")
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+          .replace(/\[.*?\]/g, "")
+          .split("\n\n")
+          .filter((p) => p.trim().length > 0),
         estimatedMinutes: Math.ceil(c.length / charsPerMinute),
       }));
 
