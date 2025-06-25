@@ -26,6 +26,7 @@ export default function UploadPage() {
   const [loading, setLoading] = useState(false);
   const [dailyMinutes, setDailyMinutes] = useState<number>(30);
   const [charsPerMinute, setCharsPerMinute] = useState<number>(1000); // Average reading speed
+  const [error, setError] = useState<string>("");
   const router = useRouter();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,7 +115,7 @@ export default function UploadPage() {
 
         // Create new segment for this chapter
         currentSegment = {
-          id: `day-${currentDay}-${chapter.id}`,
+          id: `${chapter.id}`,
           title: `Day ${currentDay + 1}`,
           content: chapter.content,
           date: new Date(Date.now() + currentDay * 86400000).toISOString().split("T")[0],
@@ -172,6 +173,7 @@ export default function UploadPage() {
     // Finalize with consecutive day numbers and dates
     return segments.map((segment, index) => ({
       ...segment,
+      id: `day-${index + 1}-${segment.id}`,
       title: `Day ${index + 1}`,
       date: new Date(Date.now() + index * 86400000).toISOString().split("T")[0],
     }));
@@ -179,6 +181,19 @@ export default function UploadPage() {
 
   const createReadingPlan = async () => {
     setLoading(true);
+
+    if (members.length === 0 || members.every((m) => m.trim() === "")) {
+      setError("Please add at least one member to the reading group.");
+      setLoading(false);
+      return;
+    }
+
+    if (Object.keys(selectedChapters).length === 0) {
+      setError("Please select at least one chapter to read.");
+      setLoading(false);
+      return;
+    }
+
     const readingGroupId = crypto.randomUUID();
     const segments = createSegments();
 
@@ -207,6 +222,7 @@ export default function UploadPage() {
 
       router.push(`/reading/${readingGroupId}`);
     } finally {
+      setError("");
       setLoading(false);
     }
   };
@@ -216,9 +232,6 @@ export default function UploadPage() {
   useEffect(() => {
     setPreviewSegments(createSegments());
   }, [chapters, selectedChapters, dailyMinutes, charsPerMinute]);
-
-  console.log(previewSegments);
-  
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -489,6 +502,8 @@ export default function UploadPage() {
                   )}
                 </button>
               </div>
+
+              {error && <p className="mt-4 text-red-500">{error}</p>}
             </div>
           )}
         </div>
