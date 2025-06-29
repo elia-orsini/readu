@@ -1,7 +1,9 @@
 import ChapterRendering from "@/components/ChapterRendering";
 import MarkAsReadButtons from "@/components/MarkAsReadButtons";
-import { DynamoDBClient, QueryCommand } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { docClient } from "@/dynamo/client";
+import { QueryCommand } from "@aws-sdk/client-dynamodb";
+import { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 interface Chapter {
@@ -40,16 +42,6 @@ const cleanChapterContent = (content: string): string => {
 };
 
 export default async function ReadingPage({ params }: { params: Promise<{ slug: string }> }) {
-  // Initialize DynamoDB client
-  const ddbClient = new DynamoDBClient({
-    region: process.env.AWS_REGION,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    },
-  });
-  const docClient = DynamoDBDocumentClient.from(ddbClient);
-
   const slug = (await params).slug;
 
   try {
@@ -117,12 +109,22 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
     });
 
     return (
-      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="rounded-xl bg-[var(--background)] p-4 shadow-sm sm:p-8">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <div className="rounded-xl bg-[var(--background)] p-4 shadow-sm">
+          <div className="flex items-center">
+            <Link
+              href={`/recap/${slug}`}
+              className="ml-auto flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 transition-all hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300 sm:text-base"
+            >
+              Recap
+            </Link>
+          </div>
+
           <MarkAsReadButtons
             chapterId={chapter.id}
             members={readingGroup.members}
             initialStatus={readStatus}
+            readingGroupId={readingGroup.id}
           />
 
           <ChapterRendering chapters={chapterData} readingGroup={readingGroup} />
@@ -139,4 +141,31 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
       </div>
     );
   }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const groupCommand = new QueryCommand({
+    TableName: "ReadingGroups",
+    KeyConditionExpression: "id = :id",
+    ExpressionAttributeValues: {
+      ":id": { S: slug },
+    },
+  }) as any;
+
+  const groupData = (await docClient.send(groupCommand)) as any;
+  if (!groupData.Items?.length) {
+    return {
+      title: `${groupData.Items[0].bookTitle.S!} | Readu`,
+    };
+  }
+
+  return {
+    title: `${groupData.Items[0].bookTitle.S!} | Readu`,
+  };
 }

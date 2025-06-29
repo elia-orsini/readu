@@ -6,10 +6,12 @@ export default function MarkAsReadButtons({
   chapterId,
   members,
   initialStatus,
+  readingGroupId,
 }: {
   chapterId: string;
   members: string[];
   initialStatus: Record<string, boolean>;
+  readingGroupId: string;
 }) {
   const [readStatus, setReadStatus] = useState(initialStatus);
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
@@ -24,6 +26,7 @@ export default function MarkAsReadButtons({
         body: JSON.stringify({
           chapterId,
           person: member,
+          readingGroupId: readingGroupId,
         }),
       });
 
@@ -38,9 +41,11 @@ export default function MarkAsReadButtons({
   };
 
   return (
-    <div className="bg-gray-200 p-4 rounded-lg shadow-sm">
-      <h3 className="mb-4 text-lg font-medium text-[var(--foreground)]">Mark as read/unread:</h3>
-      <div className="flex flex-wrap gap-3">
+    <div className="rounded-lg">
+      <h3 className="mb-2 text-base font-medium text-[var(--foreground)] opacity-60">
+        Mark as read:
+      </h3>
+      <div className="flex flex-wrap gap-4">
         {members.map((member) => (
           <button
             key={member}
@@ -49,7 +54,7 @@ export default function MarkAsReadButtons({
             className={`relative min-w-[100px] rounded-lg border px-4 py-2 transition-all ${
               readStatus[member]
                 ? "border-green-300 bg-green-100 text-green-800 shadow-inner"
-                : "border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50"
+                : "border-gray-300 bg-[var(--background)] hover:border-gray-400 hover:bg-gray-50"
             } ${loadingStates[member] ? "opacity-70" : ""} focus:outline-none focus:ring-2 focus:ring-green-300`}
           >
             {readStatus[member] ? (

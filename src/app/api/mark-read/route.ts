@@ -19,7 +19,7 @@ const docClient = DynamoDBDocumentClient.from(ddbClient);
 
 export async function POST(request: Request) {
   try {
-    const { chapterId, person } = await request.json();
+    const { chapterId, person, readingGroupId } = await request.json();
 
     if (!chapterId || !person) {
       return NextResponse.json({ error: "Missing chapterId or person" }, { status: 400 });
@@ -58,6 +58,7 @@ export async function POST(request: Request) {
             chapterId,
             person,
             date: new Date().toISOString(),
+            readingGroupId: readingGroupId,
           },
         }) as any
       );

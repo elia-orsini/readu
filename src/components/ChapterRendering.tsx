@@ -5,6 +5,7 @@ import rehypeRaw from "rehype-raw";
 
 import Chapter from "@/types/Chapter";
 import { useEffect, useState } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 
 // Check if paragraph is a chapter heading
 const isChapterHeading = (para: string): boolean => {
@@ -65,7 +66,9 @@ export default function ChapterRendering({
   return (
     <div>
       {loading ? (
-        <p>loading...</p>
+        <div className="mt-3 flex text-sm text-gray-500">
+          <LoadingSpinner /> Loading...
+        </div>
       ) : (
         <div>
           <div className="mt-6">

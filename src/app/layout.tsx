@@ -7,6 +7,18 @@ export const metadata: Metadata = {
   title: "Readu",
   description: "Readu",
   icons: { icon: "/vercel.svg" },
+  openGraph: {
+    title: "Readu",
+    description: "Readu",
+    images: [
+      {
+        url: "/vercel.svg",
+        width: 500,
+        height: 500,
+        alt: "Readu",
+      },
+    ],
+  },
 };
 
 export const viewport: Viewport = { maximumScale: 1 };
