@@ -159,6 +159,7 @@ export async function generateMetadata({
   }) as any;
 
   const groupData = (await docClient.send(groupCommand)) as any;
+
   if (!groupData.Items?.length) {
     return {
       title: `${groupData.Items[0].bookTitle.S!} | Readu`,
