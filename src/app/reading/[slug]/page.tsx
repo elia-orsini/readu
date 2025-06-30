@@ -114,7 +114,7 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
           <div className="flex items-center">
             <Link
               href={`/recap/${slug}`}
-              className="ml-auto flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 transition-all hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300 sm:text-base"
+              className="ml-auto flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 transition-all hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-gray-300 sm:text-base"
             >
               Recap
             </Link>

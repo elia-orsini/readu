@@ -57,10 +57,10 @@ export default async function RecapPage({ params }: { params: Promise<{ slug: st
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="mx-auto max-w-4xl">
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-lg font-bold text-gray-800 sm:text-3xl">Reading History</h1>
+          <h1 className="text-base font-bold text-gray-800 sm:text-3xl">Reading History</h1>
           <Link
             href={`/reading/${slug}`}
-            className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 transition-all hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300 sm:text-base"
+            className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-1 py-2 text-xs text-gray-700 transition-all hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300 sm:px-4 sm:text-base sm:text-sm"
           >
             ← Back to Reading
           </Link>
@@ -75,7 +75,7 @@ export default async function RecapPage({ params }: { params: Promise<{ slug: st
               {groupData?.Items[0]?.members?.L?.map((member: any) => (
                 <div
                   key={member.S}
-                  className="min-w-[30px] px-1 text-center sm:min-w-[60px] sm:px-3"
+                  className="min-w-[30px] px-2 text-center sm:min-w-[60px] sm:px-3"
                 >
                   {member.S}
                 </div>
@@ -85,22 +85,28 @@ export default async function RecapPage({ params }: { params: Promise<{ slug: st
 
           {/* Table Rows */}
           {Object.keys(chaptersMap) &&
-            Object.keys(chaptersMap).map((title: any, i: number) => (
-              <div
-                key={`${title}${Math.random()}`}
-                className="flex w-full flex-row border-b border-gray-100 p-4 text-sm font-medium transition-colors hover:bg-gray-50 sm:text-base"
-              >
-                <div className="min-w-[25vw]">{`${chapterData.Items[i].date.S}`}</div>
+            Object.keys(chaptersMap).map((title: any, i: number) => {
+              if (new Date(chapterData.Items[i].date.S).getTime() > Date.now()) {
+                return null; // Skip future chapters
+              } else {
+                return (
+                  <div
+                    key={`${title}${Math.random()}`}
+                    className="flex w-full flex-row border-b border-gray-100 p-4 text-sm font-medium transition-colors hover:bg-gray-50 sm:text-base"
+                  >
+                    <div className="min-w-[25vw] my-auto">{`${chapterData.Items[i].date.S}`}</div>
 
-                <div className={`ml-auto flex flex-row gap-x-4 sm:gap-x-10`}>
-                  {groupData?.Items[0]?.members?.L?.map((member: any) => (
-                    <div className="flex justify-center" key={`${Math.random()}`}>
-                      <StatusBadge read={chaptersMap?.[title]?.[member.S]} person={member.S} />
+                    <div className={`ml-auto flex flex-row gap-x-4 sm:gap-x-10`}>
+                      {groupData?.Items[0]?.members?.L?.map((member: any) => (
+                        <div className="flex justify-center" key={`${Math.random()}`}>
+                          <StatusBadge read={chaptersMap?.[title]?.[member.S]} person={member.S} />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+                  </div>
+                );
+              }
+            })}
         </div>
       </div>
     </div>
@@ -110,7 +116,7 @@ export default async function RecapPage({ params }: { params: Promise<{ slug: st
 function StatusBadge({ read, person }: { read: boolean; person: string }) {
   return (
     <button
-      className={`relative min-w-[30px] rounded-lg border px-1 py-1 text-sm transition-all hover:cursor-default sm:min-w-[60px] sm:px-4 sm:py-2 ${
+      className={`relative min-w-[30px] rounded-lg border px-2 py-1 text-sm transition-all hover:cursor-default sm:min-w-[60px] sm:px-4 sm:py-2 ${
         read
           ? "border-green-300 bg-green-100 text-green-800 shadow-inner"
           : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"

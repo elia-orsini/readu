@@ -49,14 +49,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                   </p>
                 </div>
               </Link>
-              <div className="flex items-center space-x-4">
-                <Link
-                  href="/upload"
-                  className="rounded-md bg-[var(--foreground)] px-4 py-2 text-[var(--background)] transition-colors hover:bg-gray-800"
-                >
-                  Get started
-                </Link>
-              </div>
             </div>
           </div>
         </header>

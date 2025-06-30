@@ -66,12 +66,12 @@ export default function ChapterRendering({
   return (
     <div>
       {loading ? (
-        <div className="mt-3 flex text-sm text-gray-500">
+        <div className="mt-6 flex text-sm text-gray-500">
           <LoadingSpinner /> Loading...
         </div>
       ) : (
         <div>
-          <div className="mt-6">
+          <div className="mt-8">
             <label htmlFor="chapter-select" className="mb-2 block font-medium opacity-60">
               Select Chapter:
             </label>
@@ -99,7 +99,7 @@ export default function ChapterRendering({
             )}
           </div>
 
-          <div className="my-6">
+          <div className="mt-8 mb-6">
             <h1 className="text-2xl font-bold text-[var(--foreground)]">
               {readingGroup.bookTitle}
             </h1>
