@@ -1,5 +1,6 @@
 import LoadingSpinner from "../LoadingSpinner";
 
+// This component handles file uploads and displays the upload status
 export default function UploadComponent({
   handleFileChange,
   loading,
@@ -7,7 +8,6 @@ export default function UploadComponent({
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   loading: boolean;
 }) {
-  // This component handles file uploads and displays the upload status
   return (
     <div className="mb-8">
       <label className="mb-2 block text-base font-medium text-gray-700">Upload EPUB File</label>

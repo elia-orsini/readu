@@ -54,16 +54,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </header>
 
         {children}
-
-        <footer className="border-t border-gray-100 bg-[var(--background)] py-12">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="border-[var(--foreground)]">
-              <p className="text-sm text-[var(--foreground)]">
-                © {new Date().getFullYear()} Readu. All rights reserved.
-              </p>
-            </div>
-          </div>
-        </footer>
       </body>
     </html>
   );

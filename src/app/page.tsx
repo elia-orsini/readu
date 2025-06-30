@@ -1,31 +1,19 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function IndexPage() {
   return (
     <main className="flex h-dvh w-screen flex-col justify-between font-semibold sm:h-screen">
-      <section className="bg-gray-50 py-20">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <section className="bg-gray-50 py-4">
+        <div className="mx-auto max-w-6xl px-1 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center md:flex-row">
-            <div className="mb-10 md:mb-0 md:w-1/2">
-              <h1 className="mb-6 text-5xl font-bold text-gray-900">
-                Read together, <span className="text-blue-600">stay connected</span>
-              </h1>
-              <p className="mb-8 text-xl text-gray-600">
-                Readu brings friends together through shared reading experiences. Annotate, discuss,
-                and enjoy books as a group.
-              </p>
-              <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-                <Link href="/upload">
-                  <button className="rounded-md bg-black px-6 py-3 text-white transition-colors hover:bg-gray-800">
-                    Start reading with friends
-                  </button>
-                </Link>
-              </div>
-            </div>
-            <div className="flex h-96 items-center justify-center rounded-xl bg-gray-200 md:w-1/2">
-              {/* Placeholder for hero image */}
-              <span className="text-gray-500">Hero image placeholder</span>
-            </div>
+            <Image
+              src="/landing-img.png"
+              alt="Hero Image"
+              className="m-auto"
+              width={700}
+              height={500}
+            />
           </div>
         </div>
       </section>
@@ -77,20 +65,15 @@ export default async function IndexPage() {
               </p>
             </div>
           </div>
-
-          <div className="mt-16 flex h-96 items-center justify-center rounded-xl bg-gray-200">
-            {/* Placeholder for features screenshot */}
-            <span className="text-gray-500">Features screenshot placeholder</span>
-          </div>
         </div>
       </section>
 
-      <section className="bg-blue-50 py-16">
+      <section className="bg-gray-100 py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="mb-6 text-3xl font-bold text-gray-900">
               Ever thought about reading Tolstoy?{" "}
-              <span className="text-blue-600">Now you can.</span>
+              <span className="underline">Now you can.</span>
             </h2>
             <p className="mx-auto mb-8 max-w-3xl text-xl text-gray-600">
               Tackle those intimidating classics with friends. Share the journey, break down complex
