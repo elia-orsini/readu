@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Readu",
     description: "Readu",
+    siteName: "Readu",
     images: [
       {
         url: "/cover-img.png",

@@ -71,9 +71,12 @@ export default async function RecapPage({ params }: { params: Promise<{ slug: st
           <div className="flex w-full flex-row bg-gray-100 p-4 text-sm font-medium text-gray-700 sm:text-base">
             <div className="min-w-[25vw]">Chapter</div>
 
-            <div className={`flex w-full flex-row justify-between`}>
+            <div className={`ml-auto flex flex-row gap-x-4 sm:gap-x-10`}>
               {groupData?.Items[0]?.members?.L?.map((member: any) => (
-                <div key={member.S} className="text-center">
+                <div
+                  key={member.S}
+                  className="min-w-[30px] px-1 text-center sm:min-w-[60px] sm:px-3"
+                >
                   {member.S}
                 </div>
               ))}
@@ -89,7 +92,7 @@ export default async function RecapPage({ params }: { params: Promise<{ slug: st
               >
                 <div className="min-w-[25vw]">{`${chapterData.Items[i].date.S}`}</div>
 
-                <div className={`flex w-full flex-row justify-between`}>
+                <div className={`ml-auto flex flex-row gap-x-4 sm:gap-x-10`}>
                   {groupData?.Items[0]?.members?.L?.map((member: any) => (
                     <div className="flex justify-center" key={`${Math.random()}`}>
                       <StatusBadge read={chaptersMap?.[title]?.[member.S]} person={member.S} />
