@@ -97,10 +97,7 @@ export default function UploadPage() {
       const chapterMinutes = Math.ceil(chapter.content.length / charsPerMinute);
 
       // Case 1: Chapter fits completely in remaining daily time
-      if (
-        currentSegment &&
-        currentSegment.estimatedMinutes + chapterMinutes <= dailyMinutes * 1.2
-      ) {
+      if (currentSegment && currentSegment.estimatedMinutes + chapterMinutes <= dailyMinutes) {
         // Add to current segment
         currentSegment.content += "\n\n" + chapter.content;
         currentSegment.estimatedMinutes += chapterMinutes;
@@ -125,7 +122,7 @@ export default function UploadPage() {
         };
 
         // If chapter is very long, split at natural breaks
-        if (chapterMinutes > dailyMinutes * 1.5) {
+        if (chapterMinutes > dailyMinutes) {
           // Split into paragraphs but keep headings with their content
           const paragraphs = chapter.content.split(/\n\s*\n/);
           let currentContent = "";
@@ -133,18 +130,20 @@ export default function UploadPage() {
 
           for (let i = 0; i < paragraphs.length; i++) {
             const para = paragraphs[i];
-            const paraMinutes = Math.ceil(para.length / charsPerMinute);
+            const paraMinutes = para.length / charsPerMinute;
 
             // If adding this paragraph would exceed daily limit, push current segment
-            if (currentContent && currentEstimate + paraMinutes > dailyMinutes) {
-              segments.push({
-                ...currentSegment,
-                content: currentContent,
-                estimatedMinutes: currentEstimate,
-              });
-              currentDay++;
-              currentContent = "";
-              currentEstimate = 0;
+            if (currentContent && currentEstimate + Math.ceil(paraMinutes) > dailyMinutes) {
+              if (currentEstimate > dailyMinutes * 0.2) {
+                segments.push({
+                  ...currentSegment,
+                  content: currentContent,
+                  estimatedMinutes: currentEstimate,
+                });
+                currentDay++;
+                currentContent = "";
+                currentEstimate = 0;
+              }
             }
 
             // Add paragraph to current content
@@ -152,15 +151,33 @@ export default function UploadPage() {
             currentEstimate += paraMinutes;
           }
 
-          // Push remaining content
+          // Handle remaining content
           if (currentContent) {
-            segments.push({
-              ...currentSegment,
-              content: currentContent,
-              estimatedMinutes: currentEstimate,
-            });
-            currentDay++;
-            currentSegment = null;
+            // If remaining content is small (<20% of daily time) and there are more chapters,
+            // don't create a separate segment - carry over to next chapter
+            const isSmallRemainder = currentEstimate < dailyMinutes * 0.2;
+            const hasMoreChapters = filteredChapters.indexOf(chapter) < filteredChapters.length - 1;
+
+            if (isSmallRemainder && hasMoreChapters) {
+              // Carry over to next segment
+              currentSegment = {
+                id: `${chapter.id}-remainder`,
+                title: `Day ${currentDay + 1}`,
+                content: currentContent,
+                date: new Date(Date.now() + currentDay * 86400000).toISOString().split("T")[0],
+                chapterTitles: [...currentSegment.chapterTitles],
+                estimatedMinutes: currentEstimate,
+              };
+            } else {
+              // Push remaining content as its own segment
+              segments.push({
+                ...currentSegment,
+                content: currentContent,
+                estimatedMinutes: currentEstimate,
+              });
+              currentDay++;
+              currentSegment = null;
+            }
           }
         }
       }
