@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function IndexPage() {
   return (
@@ -71,17 +72,18 @@ export default async function IndexPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="mb-6 text-3xl font-bold text-gray-900">
-              Ever thought about reading Tolstoy?{" "}
-              <span className="underline">Now you can.</span>
+              Ever thought about reading Tolstoy? <span className="underline">Now you can.</span>
             </h2>
             <p className="mx-auto mb-8 max-w-3xl text-xl text-gray-600">
               Tackle those intimidating classics with friends. Share the journey, break down complex
               passages together, and finally check those bucket-list books off your list.
             </p>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
-              <button className="rounded-md bg-black px-6 py-3 text-white transition-colors hover:bg-gray-800">
-                Start a new book today
-              </button>
+              <Link href="/register">
+                <button className="rounded-md bg-black px-6 py-3 text-white transition-colors hover:bg-gray-800">
+                  Start a new book today
+                </button>
+              </Link>
               <button className="rounded-md border border-gray-300 px-6 py-3 text-gray-700 transition-colors hover:bg-gray-100">
                 See recommended classics →
               </button>

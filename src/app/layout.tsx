@@ -6,8 +6,9 @@ import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Readu",
-  description: "Readu",
-  icons: { icon: "/vercel.svg" },
+  description:
+    "Readu brings friends together through shared reading experiences. Annotate, discuss, and enjoy books as a group.",
+  icons: { icon: "/icon-512x512.png" },
   openGraph: {
     title: "Readu",
     description: "Readu",
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
         alt: "Readu",
       },
     ],
+    url: "https://readu-group-reading.vercel.app",
   },
 };
 
