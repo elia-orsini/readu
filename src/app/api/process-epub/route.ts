@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { processEPUB } from "@/scripts/parse-epub";
+import { processEPUB } from "@/scripts/process-epub";
+
 import fs from "fs";
 import path from "path";
 
