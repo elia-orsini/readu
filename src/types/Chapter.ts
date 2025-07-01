@@ -1,3 +1,4 @@
+import DNumber from "./DNumber";
 import DString from "./DString";
 
 export default interface Chapter {
@@ -6,4 +7,5 @@ export default interface Chapter {
   title: DString;
   date: DString;
   content: DString;
+  estimatedMinutes: DNumber;
 }

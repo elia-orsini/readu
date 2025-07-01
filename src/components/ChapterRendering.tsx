@@ -6,6 +6,7 @@ import rehypeRaw from "rehype-raw";
 import Chapter from "@/types/Chapter";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
+import { format, parseISO } from "date-fns";
 
 // Check if paragraph is a chapter heading
 const isChapterHeading = (para: string): boolean => {
@@ -63,6 +64,8 @@ export default function ChapterRendering({
     return <p className="text-red-300">{error}</p>;
   }
 
+  console.log(chapters);
+
   return (
     <div>
       {loading ? (
@@ -103,7 +106,10 @@ export default function ChapterRendering({
             <h1 className="text-2xl font-bold text-[var(--foreground)]">
               {readingGroup.bookTitle}
             </h1>
-            <p className="text-[var(--foreground)] opacity-60">{currentChapter?.date?.S}</p>
+            <p className="text-[var(--foreground)] opacity-60">
+              {format(parseISO(currentChapter?.date?.S || ""), "do MMMM")} -{" "}
+              {Math.floor(currentChapter?.estimatedMinutes?.N || 0)} minutes
+            </p>
           </div>
 
           <div className="prose prose-lg max-w-none text-[var(--foreground)]">
