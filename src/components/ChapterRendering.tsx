@@ -99,7 +99,7 @@ export default function ChapterRendering({
             )}
           </div>
 
-          <div className="mt-8 mb-6">
+          <div className="mb-6 mt-8">
             <h1 className="text-2xl font-bold text-[var(--foreground)]">
               {readingGroup.bookTitle}
             </h1>

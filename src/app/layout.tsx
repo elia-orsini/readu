@@ -23,6 +23,7 @@ export const metadata: Metadata = {
     ],
     url: "https://readu-group-reading.vercel.app",
   },
+  manifest: "/api/manifest",
 };
 
 export const viewport: Viewport = { maximumScale: 1 };
