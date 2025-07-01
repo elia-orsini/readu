@@ -7,9 +7,11 @@ export async function GET() {
 
   const referer = (await headers()).get("referer");
   let readingGroupId: string | null = null;
+  let urlPathname = "";
 
   if (referer) {
     const url = new URL(referer);
+    urlPathname = url.pathname;
     const pathParts = url.pathname.split("/");
     if (pathParts.length >= 3 && pathParts[1] === "reading") {
       readingGroupId = pathParts[2];
@@ -21,7 +23,7 @@ export async function GET() {
     short_name: "Readu",
     description:
       "Readu brings friends together through shared reading experiences. Annotate, discuss, and enjoy books as a group.",
-    start_url: readingGroupId ? `/reading/${readingGroupId}` : "/",
+    start_url: readingGroupId ? `/reading/${readingGroupId}` : urlPathname,
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#000000",
