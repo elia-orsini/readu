@@ -24,6 +24,7 @@ export async function GET() {
     description:
       "Readu brings friends together through shared reading experiences. Annotate, discuss, and enjoy books as a group.",
     start_url: readingGroupId ? `/reading/${readingGroupId}` : urlPathname,
+    scope: "/",
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#000000",
