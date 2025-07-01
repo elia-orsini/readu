@@ -27,7 +27,7 @@ export async function GET() {
     scope: "/",
     display: "standalone",
     background_color: "#ffffff",
-    theme_color: "#000000",
+    theme_color: "#ffffff",
     icons: [
       {
         src: "/icon-192x192.png",
