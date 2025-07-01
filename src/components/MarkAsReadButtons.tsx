@@ -81,7 +81,7 @@ export default function MarkAsReadButtons({
             key={member}
             onClick={() => toggleReadStatus(member)}
             disabled={loadingStates[member]}
-            className={`relative min-w-[100px] rounded-lg border px-4 py-2 transition-all ${
+            className={`relative min-w-[80px] sm:min-w-[100px] rounded-lg border px-4 py-2 transition-all ${
               readStatus[member]
                 ? "border-green-300 bg-green-100 text-green-800 shadow-inner"
                 : "border-gray-300 bg-[var(--background)] hover:border-gray-400 hover:bg-gray-50"
