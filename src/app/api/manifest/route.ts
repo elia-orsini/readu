@@ -1,8 +1,8 @@
 // app/api/manifest/route.ts
 import { NextResponse } from "next/server";
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 
-export async function GET(request: Request) {
+export async function GET() {
   // Get readingGroupId from cookies or URL search params
 
   const referer = (await headers()).get("referer");
