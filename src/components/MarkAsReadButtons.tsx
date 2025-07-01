@@ -1,20 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import Chapter from "@/types/Chapter";
+import { useEffect, useState } from "react";
 
 export default function MarkAsReadButtons({
-  chapterId,
+  chapters,
   members,
-  initialStatus,
   readingGroupId,
+  statusData,
 }: {
-  chapterId: string;
+  chapters: any;
   members: string[];
-  initialStatus: Record<string, boolean>;
   readingGroupId: string;
+  statusData: any;
 }) {
-  const [readStatus, setReadStatus] = useState(initialStatus);
+  const [todayChapter, setTodayChapter] = useState<Chapter | null>(null);
+  const [readStatus, setReadStatus] = useState<Record<string, boolean>>({});
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    try {
+      const today = new Date().toLocaleDateString("en-CA");
+      const chapter = chapters.Items.find((chapter: any) => chapter.date.S === today);
+
+      if (chapter) {
+        setTodayChapter(chapter);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (todayChapter) {
+      const initialStatus: Record<string, boolean> = {};
+
+      members.forEach((member) => {
+        initialStatus[member] =
+          statusData.Items?.some(
+            (item: any) => item.person.S === member && item.chapterId.S === todayChapter.id.S
+          ) || false;
+      });
+
+      setReadStatus(initialStatus);
+    }
+  }, [todayChapter, members, statusData]);
 
   const toggleReadStatus = async (member: string) => {
     setLoadingStates((prev) => ({ ...prev, [member]: true }));
@@ -24,7 +54,7 @@ export default function MarkAsReadButtons({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          chapterId,
+          chapterId: todayChapter?.id.S,
           person: member,
           readingGroupId: readingGroupId,
         }),

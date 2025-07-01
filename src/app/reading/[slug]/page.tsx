@@ -6,40 +6,11 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-interface Chapter {
-  id: string;
-  readingGroupId: string;
-  title: string;
-  date: string;
-  content: string;
-}
-
 interface ReadingGroup {
   id: string;
   members: string[];
   bookTitle: string;
 }
-
-interface ReadingStatus {
-  [member: string]: boolean;
-}
-
-// Helper function to clean and format chapter content
-const cleanChapterContent = (content: string): string => {
-  const cleaned = content.replace(/\[(.*?)\]\(#contents\$\w+\)/g, (match, p1) => {
-    console.log(match, p1);
-
-    const title = p1
-      .trim()
-      .toUpperCase()
-      .replace(/\s+/g, "_")
-      .replace(/[^A-Z0-9_]/g, "");
-
-    return `CHAPTER_${title}`;
-  });
-
-  return cleaned;
-};
 
 export default async function ReadingPage({ params }: { params: Promise<{ slug: string }> }) {
   const slug = (await params).slug;
@@ -84,29 +55,16 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
       );
     }
 
-    const chapter: Chapter = {
-      id: chapterData.Items[0].id.S!,
-      readingGroupId: chapterData.Items[0].readingGroupId.S!,
-      title: chapterData.Items[0].title.S!,
-      date: chapterData.Items[0].date.S!,
-      content: cleanChapterContent(chapterData.Items[0].content.S!),
-    };
-
-    // 3. Fetch reading status for this chapter
     const statusCommand = new QueryCommand({
       TableName: "ChapterReadings",
-      KeyConditionExpression: "chapterId = :chapterId",
+      IndexName: "ReadingGroupIndex",
+      KeyConditionExpression: "readingGroupId = :groupId",
       ExpressionAttributeValues: {
-        ":chapterId": { S: chapter.id },
+        ":groupId": { S: slug },
       },
     }) as any;
 
     const statusData = (await docClient.send(statusCommand)) as any;
-
-    const readStatus: ReadingStatus = {};
-    readingGroup.members.forEach((member) => {
-      readStatus[member] = statusData.Items?.some((item: any) => item.person.S === member) || false;
-    });
 
     return (
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
@@ -121,10 +79,10 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
           </div>
 
           <MarkAsReadButtons
-            chapterId={chapter.id}
+            chapters={chapterData}
             members={readingGroup.members}
-            initialStatus={readStatus}
             readingGroupId={readingGroup.id}
+            statusData={statusData}
           />
 
           <ChapterRendering chapters={chapterData} readingGroup={readingGroup} />
