@@ -72,9 +72,9 @@ export default function MarkAsReadButtons({
 
   return (
     <div className="rounded-lg">
-      <h3 className="mb-2 text-base font-medium text-[var(--foreground)] opacity-60">
+      <p className="mb-2 mt-4 text-base font-medium text-[var(--foreground)] opacity-60">
         Mark as read:
-      </h3>
+      </p>
       <div className="flex flex-wrap gap-4">
         {members.map((member) => (
           <button
@@ -84,7 +84,7 @@ export default function MarkAsReadButtons({
             className={`relative min-w-[80px] sm:min-w-[100px] rounded-lg border px-4 py-2 transition-all ${
               readStatus[member]
                 ? "border-green-300 bg-green-100 text-green-800 shadow-inner"
-                : "border-gray-300 bg-[var(--background)] hover:border-gray-400 hover:bg-gray-50"
+                : "border-gray-300 bg-[var(--background)] hover:opacity-60"
             } ${loadingStates[member] ? "opacity-70" : ""} focus:outline-none focus:ring-2 focus:ring-green-300`}
           >
             {readStatus[member] ? (
