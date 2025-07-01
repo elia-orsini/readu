@@ -79,7 +79,7 @@ export default async function IndexPage() {
               passages together, and finally check those bucket-list books off your list.
             </p>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
-              <Link href="/register">
+              <Link href="/upload">
                 <button className="rounded-md bg-black px-6 py-3 text-white transition-colors hover:bg-gray-800">
                   Start a new book today
                 </button>
