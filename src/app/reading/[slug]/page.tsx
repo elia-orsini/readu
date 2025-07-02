@@ -6,67 +6,48 @@ import { docClient } from "@/dynamo/client";
 import { QueryCommand } from "@aws-sdk/client-dynamodb";
 import { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-
-interface ReadingGroup {
-  id: string;
-  members: string[];
-  bookTitle: string;
-}
 
 export default async function ReadingPage({ params }: { params: Promise<{ slug: string }> }) {
   const slug = (await params).slug;
 
   try {
-    const groupCommand = new QueryCommand({
-      TableName: "ReadingGroups",
-      KeyConditionExpression: "id = :id",
-      ExpressionAttributeValues: {
-        ":id": { S: slug },
-      },
-    }) as any;
+    // Reading Group Data
+    const readingGroupResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/reading-group?slug=${slug}`
+    );
+    if (!readingGroupResponse.ok) {
+      throw new Error(`HTTP error! status: ${readingGroupResponse.status}`);
+    }
+    const groupData = await readingGroupResponse.json();
 
-    const groupData = (await docClient.send(groupCommand)) as any;
-    if (!groupData.Items?.length) return notFound();
+    // Chapters Data
+    const chaptersResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/chapters?slug=${slug}`
+    );
+    if (!chaptersResponse.ok) {
+      throw new Error(`HTTP error! status: ${chaptersResponse.status}`);
+    }
 
-    const readingGroup: ReadingGroup = {
-      id: groupData.Items[0].id.S!,
-      members: groupData.Items[0].members.L.map((obj: any) => obj.S) || [],
-      bookTitle: groupData.Items[0].bookTitle.S!,
-    };
-
-    // 2. Fetch today's chapter
-    const chapterCommand = new QueryCommand({
-      TableName: "ReadingChapters",
-      IndexName: "readingGroupId-index",
-      KeyConditionExpression: "readingGroupId = :groupId",
-      ExpressionAttributeValues: {
-        ":groupId": { S: slug },
-      },
-    }) as any;
-
-    const chapterData = (await docClient.send(chapterCommand)) as any;
+    const chapterData = await chaptersResponse.json();
 
     if (!chapterData.Items?.length) {
       return (
         <div className="flex min-h-[50vh] items-center justify-center">
           <div className="max-w-md rounded-lg border border-gray-200 bg-gray-50 p-4 text-center text-gray-600">
-            No reading scheduled for today
+            No chapters found for this reading group.
           </div>
         </div>
       );
     }
 
-    const statusCommand = new QueryCommand({
-      TableName: "ChapterReadings",
-      IndexName: "ReadingGroupIndex",
-      KeyConditionExpression: "readingGroupId = :groupId",
-      ExpressionAttributeValues: {
-        ":groupId": { S: slug },
-      },
-    }) as any;
-
-    const statusData = (await docClient.send(statusCommand)) as any;
+    // Read Status Data
+    const readStatusResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/status-data?slug=${slug}`
+    );
+    if (!readStatusResponse.ok) {
+      throw new Error(`HTTP error! status: ${readStatusResponse.status}`);
+    }
+    const statusData = await readStatusResponse.json();
 
     return (
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
@@ -82,12 +63,12 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
 
           <MarkAsReadButtons
             chapters={chapterData}
-            members={readingGroup.members}
-            readingGroupId={readingGroup.id}
+            members={groupData.members}
+            readingGroupId={groupData.id}
             statusData={statusData}
           />
 
-          <ChapterRendering chapters={chapterData} readingGroup={readingGroup} />
+          <ChapterRendering chapters={chapterData} readingGroup={groupData} />
 
           <GoBackUpButton />
 
@@ -124,23 +105,22 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const slug = (await params).slug;
 
-  const groupCommand = new QueryCommand({
-    TableName: "ReadingGroups",
-    KeyConditionExpression: "id = :id",
-    ExpressionAttributeValues: {
-      ":id": { S: slug },
-    },
-  }) as any;
+  // Reading Group Data
+  const readingGroupResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/reading-group?slug=${slug}`
+  );
+  if (!readingGroupResponse.ok) {
+    throw new Error(`HTTP error! status: ${readingGroupResponse.status}`);
+  }
+  const groupData = await readingGroupResponse.json();
 
-  const groupData = (await docClient.send(groupCommand)) as any;
-
-  if (!groupData.Items?.length) {
+  if (!groupData) {
     return {
-      title: `${groupData.Items[0].bookTitle.S!} | Readu`,
+      title: `Readu`,
     };
   }
 
   return {
-    title: `${groupData.Items[0].bookTitle.S!} | Readu`,
+    title: `${groupData.bookTitle} | Readu`,
   };
 }
