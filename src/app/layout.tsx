@@ -26,7 +26,13 @@ export const metadata: Metadata = {
   manifest: "/api/manifest",
 };
 
-export const viewport: Viewport = { maximumScale: 1 };
+export const viewport: Viewport = {
+  maximumScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+  ],
+};
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

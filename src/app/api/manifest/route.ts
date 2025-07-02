@@ -26,7 +26,6 @@ export async function GET() {
     start_url: readingGroupId ? `/reading/${readingGroupId}` : urlPathname,
     scope: "/",
     display: "standalone",
-    theme_color: "var(--color-background)",
     icons: [
       {
         src: "/icon-192x192.png",
