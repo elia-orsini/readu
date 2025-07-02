@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Readu",
   description:
     "Readu brings friends together through shared reading experiences. Annotate, discuss, and enjoy books as a group.",
-  icons: { icon: "/icon-512x512.png" },
+  icons: { icon: "/icon-192x192.png" },
   openGraph: {
     title: "Readu",
     description: "Readu",
