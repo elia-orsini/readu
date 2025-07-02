@@ -1,5 +1,6 @@
 import { docClient } from "@/dynamo/client";
 import { QueryCommand } from "@aws-sdk/client-dynamodb";
+import { format, parseISO } from "date-fns";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -83,7 +84,7 @@ export default async function RecapPage({ params }: { params: Promise<{ slug: st
                     key={`${title}${Math.random()}`}
                     className="flex w-full flex-row border-b border-gray-100 p-4 text-sm font-medium transition-colors hover:bg-gray-50 sm:text-base"
                   >
-                    <div className="my-auto min-w-[25vw]">{`${chapterData.Items[i].date.S}`}</div>
+                    <div className="my-auto min-w-[25vw]">{`${format(parseISO(chapterData.Items[i].date.S || ""), "do MMMM")}`}</div>
 
                     <div className={`ml-auto flex flex-row gap-x-4 sm:gap-x-10`}>
                       {groupData?.Items[0]?.members?.L?.map((member: any) => (
