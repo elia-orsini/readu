@@ -2,8 +2,6 @@ import ChapterRendering from "@/components/ChapterRendering";
 import MarkAsReadButtons from "@/components/MarkAsReadButtons";
 import EndMessage from "@/components/reading/EndMessage";
 import GoBackUpButton from "@/components/reading/GoBackUpButton";
-import { docClient } from "@/dynamo/client";
-import { QueryCommand } from "@aws-sdk/client-dynamodb";
 import { Metadata } from "next";
 import Link from "next/link";
 
