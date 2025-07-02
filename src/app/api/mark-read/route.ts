@@ -1,21 +1,6 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-  DynamoDBDocumentClient,
-  PutCommand,
-  DeleteCommand,
-  QueryCommand,
-} from "@aws-sdk/lib-dynamodb";
+import { docClient } from "@/dynamo/client";
+import { PutCommand, DeleteCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { NextResponse } from "next/server";
-
-const ddbClient = new DynamoDBClient({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  },
-});
-
-const docClient = DynamoDBDocumentClient.from(ddbClient);
 
 export async function POST(request: Request) {
   try {
