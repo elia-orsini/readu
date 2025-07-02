@@ -64,8 +64,6 @@ export default function ChapterRendering({
     return <p className="text-red-300">{error}</p>;
   }
 
-  console.log(chapters);
-
   return (
     <div>
       {loading ? (

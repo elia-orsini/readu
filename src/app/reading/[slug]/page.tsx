@@ -1,5 +1,6 @@
 import ChapterRendering from "@/components/ChapterRendering";
 import MarkAsReadButtons from "@/components/MarkAsReadButtons";
+import GoBackUpButton from "@/components/reading/GoBackUpButton";
 import { docClient } from "@/dynamo/client";
 import { QueryCommand } from "@aws-sdk/client-dynamodb";
 import { Metadata } from "next";
@@ -86,6 +87,8 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
           />
 
           <ChapterRendering chapters={chapterData} readingGroup={readingGroup} />
+
+          <GoBackUpButton />
         </div>
       </div>
     );
