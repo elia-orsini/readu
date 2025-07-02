@@ -122,7 +122,7 @@ export default function ChapterRendering({
                 return (
                   <div
                     key={i}
-                    className={`leading-relaxed ${
+                    className={`text-justify leading-relaxed ${
                       isChapterHeading(para)
                         ? "mt-40 flex w-full flex-row border-b border-gray-200 pb-2 text-xl font-bold capitalize text-[var(--foreground)] first:mt-4"
                         : "my-4 opacity-80"

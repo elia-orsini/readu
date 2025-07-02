@@ -70,7 +70,7 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
 
     return (
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-        <div className="bg-[var(--background)]">
+        <div className="bg-[var(--background)] p-4">
           <div className="flex items-center">
             <Link
               href={`/recap/${slug}`}
