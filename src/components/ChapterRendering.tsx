@@ -7,6 +7,7 @@ import Chapter from "@/types/Chapter";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import { format, parseISO } from "date-fns";
+import { useScrollPositionPersistence } from "@/hooks/useScrollPositionPersistence";
 
 // Check if paragraph is a chapter heading
 const isChapterHeading = (para: string): boolean => {
@@ -27,6 +28,8 @@ export default function ChapterRendering({
   chapters: any;
   readingGroup: any;
 }) {
+  useScrollPositionPersistence();
+
   const [todayChapter, setTodayChapter] = useState<Chapter | null>(null);
   const [currentChapter, setCurrentChapter] = useState<Chapter | null>(null);
   const [loading, setLoading] = useState(true);
@@ -79,7 +82,7 @@ export default function ChapterRendering({
             <select
               onChange={(e) => handleChapterChange(e.target.value)}
               value={currentChapter?.id.S || ""}
-              className="border-[var(--foreground)] focus:border-foreground/60 focus:ring-foreground/60 hover:bg-secondary w-full rounded-lg border bg-[var(--background)] p-2 opacity-80 focus:outline-none"
+              className="focus:border-foreground/60 focus:ring-foreground/60 hover:bg-secondary w-full rounded-lg border border-[var(--foreground)] bg-[var(--background)] p-2 opacity-80 focus:outline-none"
             >
               {chapters.Items.map((chapter: any) => (
                 <option key={chapter.date.S} value={chapter.id.S}>
@@ -103,9 +106,7 @@ export default function ChapterRendering({
           </div>
 
           <div className="mb-6 mt-8">
-            <h1 className="text-2xl font-bold text-foreground">
-              {readingGroup.bookTitle}
-            </h1>
+            <h1 className="text-2xl font-bold text-foreground">{readingGroup.bookTitle}</h1>
             <p className="text-foreground opacity-60">
               {format(parseISO(currentChapter?.date?.S || ""), "do MMMM")} -{" "}
               {Math.floor(currentChapter?.estimatedMinutes?.N || 0)} minutes
