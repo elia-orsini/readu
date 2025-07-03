@@ -53,7 +53,7 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
           <div className="flex items-center">
             <Link
               href={`/recap/${slug}`}
-              className="ml-auto flex items-center rounded-lg border border-gray-300 bg-[var(--background)] px-4 py-2 text-sm text-[var(--foreground)] transition-all hover:opacity-60 focus:outline-none focus:ring-gray-300 sm:text-base"
+              className="ml-auto flex items-center rounded-lg border border-foreground bg-[var(--background)] px-4 py-2 text-sm text-[var(--foreground)] transition-all hover:bg-secondary focus:outline-none focus:ring-gray-300 sm:text-base"
             >
               Recap
             </Link>
@@ -72,10 +72,10 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
 
           <EndMessage />
 
-          <footer className="border-t border-gray-100 bg-white py-12">
+          <footer className="border-foreground border-t bg-[var(--background)] py-12">
             <div className="mx-auto max-w-6xl">
-              <div className="border-gray-200">
-                <p className="text-sm text-gray-500">
+              <div className="">
+                <p className="text-sm text-foreground">
                   © {new Date().getFullYear()} Readu. All rights reserved.
                 </p>
               </div>

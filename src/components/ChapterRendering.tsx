@@ -67,7 +67,7 @@ export default function ChapterRendering({
   return (
     <div>
       {loading ? (
-        <div className="mt-6 flex text-sm text-gray-500">
+        <div className="mt-6 flex text-sm text-foreground">
           <LoadingSpinner /> Loading...
         </div>
       ) : (
@@ -79,11 +79,13 @@ export default function ChapterRendering({
             <select
               onChange={(e) => handleChapterChange(e.target.value)}
               value={currentChapter?.id.S || ""}
-              className="border-[var(--foreground)]/40 focus:border-[var(--foreground)]/60 focus:ring-[var(--foreground)]/60 w-full rounded-lg border bg-[var(--background)] p-2 opacity-80 hover:opacity-60 focus:outline-none focus:ring-2"
+              className="border-[var(--foreground)] focus:border-foreground/60 focus:ring-foreground/60 hover:bg-secondary w-full rounded-lg border bg-[var(--background)] p-2 opacity-80 focus:outline-none"
             >
               {chapters.Items.map((chapter: any) => (
                 <option key={chapter.date.S} value={chapter.id.S}>
-                  {chapter.date.S}
+                  {chapter.date.S === new Date().toLocaleDateString("en-CA")
+                    ? "Today"
+                    : format(parseISO(chapter.date.S), "do MMMM")}
                 </option>
               ))}
             </select>
@@ -101,16 +103,16 @@ export default function ChapterRendering({
           </div>
 
           <div className="mb-6 mt-8">
-            <h1 className="text-2xl font-bold text-[var(--foreground)]">
+            <h1 className="text-2xl font-bold text-foreground">
               {readingGroup.bookTitle}
             </h1>
-            <p className="text-[var(--foreground)] opacity-60">
+            <p className="text-foreground opacity-60">
               {format(parseISO(currentChapter?.date?.S || ""), "do MMMM")} -{" "}
               {Math.floor(currentChapter?.estimatedMinutes?.N || 0)} minutes
             </p>
           </div>
 
-          <div className="prose prose-lg max-w-none text-[var(--foreground)]">
+          <div className="prose prose-lg max-w-none text-foreground">
             {currentChapter &&
               currentChapter.content.S.split("\n\n").map((para, i) => {
                 if (!para.trim()) return null;
@@ -124,7 +126,7 @@ export default function ChapterRendering({
                     key={i}
                     className={`text-justify leading-relaxed ${
                       isChapterHeading(para)
-                        ? "mt-40 flex w-full flex-row border-b border-gray-200 pb-2 text-xl font-bold capitalize text-[var(--foreground)] first:mt-4"
+                        ? "mt-40 flex w-full flex-row border-b border-gray-200 pb-2 text-xl font-bold capitalize text-foreground first:mt-4"
                         : "my-4 opacity-80"
                     }`}
                   >

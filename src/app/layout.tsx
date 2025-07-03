@@ -38,7 +38,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body className={`no-scrollbar overflow-x-clip antialiased`}>
-        <header className="sticky top-0 z-50 border-b border-gray-100 bg-[var(--background)]">
+        <header className="sticky top-0 z-50 border-b border-foreground bg-background">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <Link href="/">
@@ -53,7 +53,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                   <span className="ml-2 text-xl font-semibold text-[var(--foreground)]">
                     Readu{" "}
                   </span>
-                  <p className="ml-2 mt-0.5 inline rounded bg-[var(--foreground)] px-2 text-sm text-[var(--background)]">
+                  <p className="ml-2 mt-0.5 inline rounded bg-[var(--foreground)] px-2 text-sm text-background">
                     BETA
                   </p>
                 </div>

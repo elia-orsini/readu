@@ -13,7 +13,7 @@ export default function GoBackUpButton() {
     <div>
       <button
         onClick={topFunction}
-        className={`${scroll && scroll > 300 ? "fixed" : "hidden"} bottom-10 right-10 z-40 flex h-10 w-10 max-w-xl rotate-[270deg] rounded-full border bg-[var(--background)] p-0 px-2 font-semibold text-[var(--foreground)] transition-colors duration-500 xl:bottom-12 xl:right-14 xl:h-16 xl:w-16`}
+        className={`${scroll && scroll > 300 ? "fixed" : "hidden"} hover:bg-secondary bottom-10 right-10 z-40 flex h-10 w-10 max-w-xl rotate-[270deg] rounded-full border border-foreground bg-background p-0 px-2 font-semibold text-[var(--foreground)] transition-colors duration-500 xl:bottom-12 xl:right-14 xl:h-16 xl:w-16`}
       >
         <svg
           className={`duration-2000 transition-transform ease-in-out`}

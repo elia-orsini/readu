@@ -81,10 +81,10 @@ export default function MarkAsReadButtons({
             key={member}
             onClick={() => toggleReadStatus(member)}
             disabled={loadingStates[member]}
-            className={`relative min-w-[80px] sm:min-w-[100px] rounded-lg border px-4 py-2 transition-all ${
+            className={`relative min-w-[80px] rounded-lg border px-4 py-2 transition-all sm:min-w-[100px] ${
               readStatus[member]
-                ? "border-green-300 bg-green-100 text-green-800 shadow-inner"
-                : "border-gray-300 bg-[var(--background)] hover:opacity-60"
+                ? "border-green-600 bg-green-100 text-green-800 shadow-inner hover:bg-green-200"
+                : "hover:bg-secondary border-foreground bg-background"
             } ${loadingStates[member] ? "opacity-70" : ""} focus:outline-none focus:ring-2 focus:ring-green-300`}
           >
             {readStatus[member] ? (

@@ -53,7 +53,7 @@ export default function RecapTable({
 
   if (isLoading)
     return (
-      <div className="mt-6 flex text-sm text-gray-500">
+      <div className="mt-6 flex text-sm text-foreground">
         <LoadingSpinner /> Loading...
       </div>
     );
@@ -61,8 +61,8 @@ export default function RecapTable({
   if (!data) return <p>No profile data</p>;
 
   return (
-    <div className="overflow-hidden rounded-xl bg-white shadow-sm">
-      <div className="flex w-full flex-row bg-gray-100 p-4 text-sm font-medium text-gray-700 sm:text-base">
+    <div className="border-foreground overflow-hidden rounded-xl border bg-background shadow-sm">
+      <div className="bg-secondary flex w-full flex-row p-4 text-sm font-medium text-foreground sm:text-base">
         <div className="min-w-[25vw]">Chapter</div>
       </div>
 
@@ -74,7 +74,7 @@ export default function RecapTable({
             return (
               <div
                 key={`${title}${Math.random()}`}
-                className="flex w-full flex-row border-b border-gray-100 p-4 text-sm font-medium transition-colors hover:bg-gray-50 sm:text-base"
+                className="border-foreground flex w-full flex-row border-t p-4 text-sm font-medium transition-colors hover:bg-thirdiary sm:text-base"
               >
                 <div className="my-auto min-w-[25vw]">{`${format(parseISO(chapterData.Items[i].date.S || ""), "do MMMM")}`}</div>
 
