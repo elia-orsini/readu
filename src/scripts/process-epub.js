@@ -20,7 +20,7 @@ async function processEPUB(filePath) {
       };
     });
 
-    chapters.filter((chapter) => chapter.content.length > 5);
+    chapters.filter((chapter) => chapter.content.length > 10);
 
     return { title, chapters };
   } catch (error) {

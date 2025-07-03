@@ -10,7 +10,7 @@ export default function UploadComponent({
 }) {
   return (
     <div className="mb-8">
-      <label className="mb-2 block text-base font-medium text-gray-700">Upload EPUB File</label>
+      <label className="mb-2 block text-base font-medium text-gray-700">Upload an EPUB File</label>
       <div className="flex items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 px-6 py-10 text-center hover:border-gray-300">
         <div className="space-y-2">
           <svg
@@ -48,7 +48,7 @@ export default function UploadComponent({
         </div>
       </div>
       {loading && (
-        <div className="mt-3 flex items-center text-sm text-gray-500">
+        <div className="mt-3 flex items-center text-sm text-black">
           <LoadingSpinner /> Processing EPUB file...
         </div>
       )}
