@@ -30,7 +30,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   themeColor: [
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-    { media: "(prefers-color-scheme: light)", color: "#ededed" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
   ],
 };
 
@@ -48,7 +48,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                     alt="Readu Logo"
                     width={200}
                     height={200}
-                    className="ml-2 h-4 w-8"
+                    className="ml-2 block h-4 w-8 dark:hidden"
+                  />
+                  <Image
+                    src="/readu-sm-logo-dark.png"
+                    alt="Readu Logo"
+                    width={200}
+                    height={200}
+                    className="ml-2 hidden h-4 w-8 dark:block"
                   />
                   <span className="ml-2 text-xl font-semibold text-[var(--foreground)]">
                     Readu{" "}
