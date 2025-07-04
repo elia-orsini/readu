@@ -26,8 +26,16 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
     if (!chaptersResponse.ok) {
       throw new Error(`HTTP error! status: ${chaptersResponse.status}`);
     }
-
     const chapterData = await chaptersResponse.json();
+
+    // Read Status Data
+    const readStatusResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/status-data?slug=${slug}`
+    );
+    if (!readStatusResponse.ok) {
+      throw new Error(`HTTP error! status: ${readStatusResponse.status}`);
+    }
+    const statusData = await readStatusResponse.json();
 
     if (!chapterData.Items?.length) {
       return (
@@ -39,15 +47,6 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
       );
     }
 
-    // Read Status Data
-    const readStatusResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_SITE_URL}/api/status-data?slug=${slug}`
-    );
-    if (!readStatusResponse.ok) {
-      throw new Error(`HTTP error! status: ${readStatusResponse.status}`);
-    }
-    const statusData = await readStatusResponse.json();
-
     return (
       <>
         <Header />
@@ -57,7 +56,7 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
             <div className="flex items-center">
               <Link
                 href={`/recap/${slug}`}
-                className="hover:bg-secondary ml-auto flex items-center rounded-lg border border-foreground bg-[var(--background)] px-4 py-2 text-sm text-[var(--foreground)] transition-all focus:outline-none focus:ring-gray-300 sm:text-base"
+                className="ml-auto flex items-center rounded-lg border border-foreground bg-[var(--background)] px-4 py-2 text-sm text-[var(--foreground)] transition-all hover:bg-secondary focus:outline-none focus:ring-gray-300 sm:text-base"
               >
                 Recap
               </Link>
