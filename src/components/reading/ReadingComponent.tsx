@@ -34,13 +34,12 @@ export default function ReadingComponent({
     fetchHighlights();
   }, [currentChapter]);
 
-  const handleMouseUp = () => {
+  const handleSelection = () => {
     const selection = window.getSelection();
     if (selection && selection.toString().trim()) {
       setSelection(selection.toString());
       return;
     }
-
     setSelection(null);
   };
 
@@ -86,7 +85,12 @@ export default function ReadingComponent({
   };
 
   return (
-    <div className="prose prose-lg max-w-none text-foreground" onMouseUp={handleMouseUp}>
+    <div
+      className="prose prose-lg max-w-none text-foreground"
+      onMouseUp={handleSelection}
+      onTouchEnd={handleSelection}
+      onTouchCancel={() => setSelection(null)}
+    >
       {selection && (
         <HighlightButton onHighlight={handleHighlight} readingGroupMembers={readingGroup.members} />
       )}
