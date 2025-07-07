@@ -87,7 +87,7 @@ export default function ChapterRendering({
             </p>
           </div>
 
-          <ReadingComponent currentChapter={currentChapter} />
+          <ReadingComponent currentChapter={currentChapter} readingGroup={readingGroup} />
         </div>
       )}
     </div>
