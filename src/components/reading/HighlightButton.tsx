@@ -21,9 +21,10 @@ export default function HighlightButton({
 
   function saveCurrentUser(user: string) {
     localStorage.setItem("currentUser", user);
+    setCurrentUser(user);
   }
 
-  function highlightButtonClick() {
+  function handleHighlightClick() {
     if (!currentUser) {
       setShowPopup(true);
     }
@@ -37,6 +38,7 @@ export default function HighlightButton({
     setCurrentUser(null);
     setShowPopup(true);
   }
+
   return (
     <div>
       {showPopup && !currentUser && (
@@ -62,7 +64,8 @@ export default function HighlightButton({
 
       {!showPopup && (
         <button
-          onClick={highlightButtonClick}
+          onClick={handleHighlightClick}
+          onTouchEnd={handleHighlightClick}
           className="fixed bottom-10 left-1/2 z-50 -translate-x-1/2 transform rounded border border-foreground px-4 py-2 text-foreground"
           style={{
             backgroundColor: currentUser
