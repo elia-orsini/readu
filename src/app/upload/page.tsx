@@ -339,7 +339,7 @@ export default function UploadPage() {
                           type="text"
                           value={member}
                           onChange={(e) => updateMember(i, e.target.value)}
-                          className="block w-40 rounded-md border border-black border-gray-200 px-3 py-2 shadow-sm focus:outline-none"
+                          className="block w-40 rounded-md border border-black px-3 py-2 shadow-sm focus:outline-none"
                           placeholder="Member name"
                         />
                       </div>

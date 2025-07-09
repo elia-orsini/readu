@@ -15,8 +15,6 @@ export const useScrollPositionPersistence = () => {
     // Check for saved position for today
     const savedPosition = localStorage.getItem(today);
     if (savedPosition) {
-      console.log("Restoring scroll position:", parseInt(savedPosition, 10));
-
       setTimeout(() => {
         window.scrollTo(0, parseInt(savedPosition, 10));
       }, 300);
