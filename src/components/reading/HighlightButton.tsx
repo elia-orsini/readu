@@ -58,6 +58,10 @@ export default function HighlightButton({
                   saveCurrentUser(member);
                   onHighlight(highlightsColours[i].hex, "");
                 }}
+                onTouchEnd={() => {
+                  saveCurrentUser(member);
+                  onHighlight(highlightsColours[i].hex, "");
+                }}
               >
                 {member}
               </button>
