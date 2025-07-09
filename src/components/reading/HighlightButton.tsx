@@ -37,6 +37,10 @@ export default function HighlightButton({
 
     setCurrentUser(null);
     setShowPopup(true);
+
+    if (window.getSelection) {
+      window.getSelection()?.removeAllRanges();
+    }
   }
 
   return (
