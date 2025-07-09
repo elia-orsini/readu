@@ -43,6 +43,8 @@ export default function ReadingComponent({
       setSelection(selection.toString());
       return;
     }
+
+    setSelection("");
   };
 
   const handleHighlight = async (color: string, note?: string) => {
