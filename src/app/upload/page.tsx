@@ -116,7 +116,7 @@ export default function UploadPage() {
 
         // Create new segment for this chapter
         currentSegment = {
-          id: `${chapter.id}`,
+          id: crypto.randomUUID(),
           title: `Day ${currentDay + 1}`,
           content: chapter.content,
           date: new Date(Date.now() + currentDay * 86400000).toISOString().split("T")[0],
@@ -162,9 +162,8 @@ export default function UploadPage() {
             const hasMoreChapters = filteredChapters.indexOf(chapter) < filteredChapters.length - 1;
 
             if (isSmallRemainder && hasMoreChapters) {
-              // Carry over to next segment
               currentSegment = {
-                id: `${chapter.id}-remainder`,
+                id: crypto.randomUUID(),
                 title: `Day ${currentDay + 1}`,
                 content: currentContent,
                 date: new Date(Date.now() + currentDay * 86400000).toISOString().split("T")[0],
@@ -194,7 +193,7 @@ export default function UploadPage() {
     // Finalize with consecutive day numbers and dates
     return segments.map((segment, index) => ({
       ...segment,
-      id: `day-${index + 1}-${segment.id}`,
+      id: crypto.randomUUID(),
       title: `Day ${index + 1}`,
       date: new Date(Date.now() + index * 86400000).toISOString().split("T")[0],
     }));
