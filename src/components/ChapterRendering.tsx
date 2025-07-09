@@ -82,7 +82,7 @@ export default function ChapterRendering({
 
           <div className="flex flex-row gap-x-6">
             {readingGroup.members.map((member: string, i: number) => (
-              <div className="flex flex-row gap-x-1.5">
+              <div key={`${member}_${i}`} className="flex flex-row gap-x-1.5">
                 <div
                   className="my-auto h-[15px] w-[15px] rounded-full border border-foreground"
                   style={{ backgroundColor: highlightsColours[i].hex }}
