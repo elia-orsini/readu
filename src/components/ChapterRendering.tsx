@@ -85,7 +85,7 @@ export default function ChapterRendering({
               <div key={`${member}_${i}`} className="flex flex-row gap-x-1.5">
                 <div
                   className="my-auto h-[15px] w-[15px] rounded-full border border-foreground"
-                  style={{ backgroundColor: highlightsColours[i].hex }}
+                  style={{ backgroundColor: `var(--${highlightsColours[i].cssVar})` }}
                 />
                 <p>{member}</p>
               </div>

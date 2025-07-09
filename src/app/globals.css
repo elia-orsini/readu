@@ -7,6 +7,10 @@
   --foreground: #000000;
   --secondary-foreground: oklch(95.213% 0.00011 271.152);
   --thirdiary-foreground: oklch(97.315% 0.00011 271.152);
+
+  --first-highlight: oklch(85.5% 0.138 181.071);
+  --second-highlight: oklch(89.7% 0.196 126.665);
+  --third-highlight: oklch(70.4% 0.191 22.216);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -15,6 +19,10 @@
     --foreground: #ededed;
     --secondary-foreground: oklch(26.448% 0.00003 271.152);
     --thirdiary-foreground: oklch(21.342% 0.00002 271.152);
+
+    --first-highlight: oklch(51.1% 0.096 186.391);
+    --second-highlight: oklch(53.2% 0.157 131.589);
+    --third-highlight: oklch(50.5% 0.213 27.518);
   }
 }
 
