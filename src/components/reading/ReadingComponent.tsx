@@ -3,6 +3,8 @@ import HighlightButton from "./HighlightButton";
 import { isChapterHeading } from "@/utils/isChapterHeading";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import { highlightText } from "./HighlightedText";
+import { useWebsiteStore } from "@/store/useWebsiteStore";
 
 export default function ReadingComponent({
   currentChapter,
@@ -13,6 +15,7 @@ export default function ReadingComponent({
 }) {
   const [selection, setSelection] = useState<string | null>(null);
   const [highlights, setHighlights] = useState<any[]>([]);
+  const { currentUser } = useWebsiteStore();
 
   useEffect(() => {
     const fetchHighlights = async () => {
@@ -51,7 +54,7 @@ export default function ReadingComponent({
       text: selection,
       color,
       note,
-      userId: "current-user-id", // Replace with actual user ID
+      userId: currentUser,
       createdAt: new Date().toISOString(),
     };
 
@@ -74,10 +77,7 @@ export default function ReadingComponent({
     let highlightedText = text;
 
     highlights?.forEach((hl: any) => {
-      highlightedText = highlightedText.replace(
-        hl.text,
-        `<span style="background-color: ${hl.color};" class="px-1 rounded" data-highlight-id="${hl.highlightId}">${hl.text}</span>`
-      );
+      highlightedText = highlightedText.replace(hl.text, highlightText(hl.text, hl.color, hl.id));
     });
 
     return highlightedText;

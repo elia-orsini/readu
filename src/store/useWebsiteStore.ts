@@ -2,16 +2,16 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface WebsiteStore {
-  navBarText: string;
-  setNavBarText: (rawMarkdown: string) => void;
+  currentUser: string | null;
+  setCurrentUser: (currentUser: string | null) => void;
 }
 
 export const useWebsiteStore = create<WebsiteStore>()(
   persist(
     (set) => ({
-      navBarText: "",
-      setNavBarText: (navBarText: any) => set({ navBarText }),
+      currentUser: null,
+      setCurrentUser: (currentUser) => set({ currentUser }),
     }),
-    { name: "editor-state" }
+    { name: "website-state" }
   )
 );

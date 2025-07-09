@@ -1,4 +1,5 @@
 import { highlightsColours } from "@/constants/constants";
+import { useWebsiteStore } from "@/store/useWebsiteStore";
 import { useEffect, useState } from "react";
 
 export default function HighlightButton({
@@ -9,7 +10,7 @@ export default function HighlightButton({
   readingGroupMembers: string[];
 }) {
   const [showPopup, setShowPopup] = useState(false);
-  const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const { currentUser, setCurrentUser } = useWebsiteStore();
 
   useEffect(() => {
     const currentUser = localStorage.getItem("currentUser");
