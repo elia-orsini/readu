@@ -7,6 +7,7 @@ import { format, parseISO } from "date-fns";
 import { useScrollPositionPersistence } from "@/hooks/useScrollPositionPersistence";
 import ChapterSelection from "./reading/ChapterSelection";
 import ReadingComponent from "./reading/ReadingComponent";
+import { highlightsColours } from "@/constants/constants";
 
 export default function ChapterRendering({
   chapters,
@@ -77,6 +78,18 @@ export default function ChapterRendering({
                 ← Today&apos;s Chapter
               </button>
             )}
+          </div>
+
+          <div className="flex flex-row gap-x-6">
+            {readingGroup.members.map((member: string, i: number) => (
+              <div className="flex flex-row gap-x-1.5">
+                <div
+                  className="my-auto h-[15px] w-[15px] rounded-full border border-foreground"
+                  style={{ backgroundColor: highlightsColours[i].hex }}
+                />
+                <p>{member}</p>
+              </div>
+            ))}
           </div>
 
           <div className="mb-6 mt-8">
