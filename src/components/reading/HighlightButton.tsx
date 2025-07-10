@@ -8,7 +8,7 @@ export default function HighlightButton({
   onHighlight,
   readingGroupMembers,
 }: {
-  onHighlight: (color: string, note?: string) => void;
+  onHighlight: (color: string, note: string, user: string) => void;
   readingGroupMembers: string[];
 }) {
   const [showPopup, setShowPopup] = useState(false);
@@ -24,14 +24,14 @@ export default function HighlightButton({
 
     const currentUserIndex = readingGroupMembers.indexOf(currentUser);
     if (currentUserIndex !== -1) {
-      onHighlight(highlightsColours[currentUserIndex].cssVar, "");
+      onHighlight(highlightsColours[currentUserIndex].cssVar, "", currentUser);
     }
   };
 
   const handleMemberSelect = (member: string, index: number) => {
     setCurrentUser(member);
 
-    onHighlight(highlightsColours[index].cssVar, "");
+    onHighlight(highlightsColours[index].cssVar, "", member);
 
     setShowPopup(false);
   };

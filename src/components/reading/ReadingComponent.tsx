@@ -50,7 +50,7 @@ export default function ReadingComponent({
     setSelection(null);
   };
 
-  const handleHighlight = async (color: string, note?: string) => {
+  const handleHighlight = async (color: string, note: string, user: string) => {
     if (!selection) return;
 
     const highlight = {
@@ -60,7 +60,7 @@ export default function ReadingComponent({
       readingGroupId: readingGroup.id,
       text: selection,
       color,
-      userId: currentUser || "",
+      userId: user || currentUser || "",
       createdAt: new Date().toISOString(),
     };
     setHighlights([...highlights, highlight]);
