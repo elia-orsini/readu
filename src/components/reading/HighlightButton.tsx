@@ -70,12 +70,11 @@ export default function HighlightButton({
       <button
         onClick={handleHighlightClick}
         onTouchEnd={handleHighlightClick}
-        className="fixed bottom-10 left-1/2 z-50 -translate-x-1/2 transform rounded border border-foreground px-4 py-2 text-foreground"
-        style={{
-          backgroundColor: currentUser
-            ? `var(--${highlightsColours[readingGroupMembers.indexOf(currentUser)].cssVar})`
-            : `var(--${highlightsColours[0].cssVar})`,
-        }}
+        className={`fixed bottom-10 z-50 rounded border border-foreground !bg-black px-4 py-2 text-background sm:left-1/2 sm:-translate-x-1/2 sm:transform sm:text-foreground sm:bg-[var(--${
+          currentUser
+            ? highlightsColours[readingGroupMembers.indexOf(currentUser)].cssVar
+            : highlightsColours[0].cssVar
+        })]`}
       >
         Highlight
       </button>
