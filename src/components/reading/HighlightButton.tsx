@@ -69,6 +69,7 @@ export default function HighlightButton({
 
       <button
         onClick={handleHighlightClick}
+        onTouchEnd={handleHighlightClick}
         className="fixed bottom-10 left-1/2 z-50 -translate-x-1/2 transform rounded border border-foreground px-4 py-2 text-foreground"
         style={{
           backgroundColor: currentUser
