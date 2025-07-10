@@ -32,7 +32,12 @@ export default function HighlightButton({
 
   const handleMemberSelect = (member: string, index: number) => {
     setCurrentUser(member);
-    onHighlight(highlightsColours[index].cssVar, "");
+
+    const currentUserIndex = readingGroupMembers.indexOf(member);
+    if (currentUserIndex !== -1) {
+      onHighlight(highlightsColours[currentUserIndex].cssVar, "");
+    }
+
     setShowPopup(false);
   };
 
@@ -48,7 +53,7 @@ export default function HighlightButton({
             <div className="flex flex-col gap-2">
               {readingGroupMembers.map((member, i) => (
                 <button
-                  key={member}
+                  key={`${member}_${i}`}
                   className="rounded-sm border border-foreground px-4 py-2 hover:bg-gray-300"
                   style={{
                     backgroundColor: `var(--${highlightsColours[i].cssVar})`,

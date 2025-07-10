@@ -51,7 +51,7 @@ export default function ReadingComponent({
   };
 
   const handleHighlight = async (color: string, note?: string) => {
-    if (!selection || !currentUser) return;
+    if (!selection) return;
 
     const highlight = {
       note: note || "",
@@ -60,7 +60,7 @@ export default function ReadingComponent({
       readingGroupId: readingGroup.id,
       text: selection,
       color,
-      userId: currentUser,
+      userId: currentUser || "",
       createdAt: new Date().toISOString(),
     };
 
