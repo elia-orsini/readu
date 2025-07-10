@@ -1,3 +1,5 @@
+"use client";
+
 import { highlightsColours } from "@/constants/constants";
 import { useWebsiteStore } from "@/store/useWebsiteStore";
 import { useState } from "react";
@@ -12,70 +14,68 @@ export default function HighlightButton({
   const [showPopup, setShowPopup] = useState(false);
   const { currentUser, setCurrentUser } = useWebsiteStore();
 
-  function saveCurrentUser(user: string) {
-    setCurrentUser(user);
-  }
-
-  function handleHighlightClick() {
+  const handleHighlightClick = () => {
     if (!currentUser) {
       setShowPopup(true);
+      return;
     }
 
-    const currentUserIndex = readingGroupMembers.indexOf(currentUser!);
-
+    const currentUserIndex = readingGroupMembers.indexOf(currentUser);
     if (currentUserIndex !== -1) {
       onHighlight(highlightsColours[currentUserIndex].cssVar, "");
     }
 
-    setCurrentUser(null);
-    setShowPopup(true);
-
     if (window.getSelection) {
       window.getSelection()?.removeAllRanges();
     }
-  }
+  };
+
+  const handleMemberSelect = (member: string, index: number) => {
+    setCurrentUser(member);
+    onHighlight(highlightsColours[index].cssVar, "");
+    setShowPopup(false);
+  };
 
   return (
     <div>
-      {showPopup && !currentUser && (
-        <div className="fixed inset-x-0 inset-y-0 z-50 m-auto flex h-max w-max flex-col gap-2 rounded-lg border border-foreground bg-background px-20 py-10 shadow-xl">
-          <p className="text-center text-lg">Who are you?</p>
-          <div className="flex flex-col gap-y-2">
-            {readingGroupMembers.map((member, i) => (
-              <button
-                key={member}
-                className="rounded-sm border border-foreground px-4 py-2 hover:bg-gray-300"
-                style={{ backgroundColor: `var(--${highlightsColours[i].cssVar})` }}
-                onClick={() => {
-                  saveCurrentUser(member);
-                  onHighlight(highlightsColours[i].cssVar, "");
-                }}
-                onTouchEnd={() => {
-                  saveCurrentUser(member);
-                  onHighlight(highlightsColours[i].cssVar, "");
-                }}
-              >
-                {member}
-              </button>
-            ))}
+      {showPopup && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={() => setShowPopup(false)} // Close when clicking outside
+        >
+          <div className="m-4 flex max-w-md flex-col gap-4 rounded-lg border border-foreground bg-background p-6 shadow-xl">
+            <p className="text-center text-lg">Who are you?</p>
+            <div className="flex flex-col gap-2">
+              {readingGroupMembers.map((member, i) => (
+                <button
+                  key={member}
+                  className="rounded-sm border border-foreground px-4 py-2 hover:bg-gray-300"
+                  style={{
+                    backgroundColor: `var(--${highlightsColours[i].cssVar})`,
+                    color: "#000",
+                  }}
+                  onClick={() => handleMemberSelect(member, i)}
+                  onTouchEnd={() => handleMemberSelect(member, i)}
+                >
+                  {member}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
 
-      {!showPopup && (
-        <button
-          onClick={handleHighlightClick}
-          onTouchEnd={handleHighlightClick}
-          className="fixed bottom-10 left-1/2 z-50 -translate-x-1/2 transform rounded border border-foreground px-4 py-2 text-foreground"
-          style={{
-            backgroundColor: currentUser
-              ? `var(--${highlightsColours[readingGroupMembers.indexOf(currentUser)].cssVar})`
-              : `var(--${highlightsColours[0].cssVar})`,
-          }}
-        >
-          Highlight
-        </button>
-      )}
+      <button
+        onClick={handleHighlightClick}
+        className="fixed bottom-10 left-1/2 z-50 -translate-x-1/2 transform rounded border border-foreground px-4 py-2 text-foreground"
+        style={{
+          backgroundColor: currentUser
+            ? `var(--${highlightsColours[readingGroupMembers.indexOf(currentUser)].cssVar})`
+            : `var(--${highlightsColours[0].cssVar})`,
+        }}
+      >
+        Highlight
+      </button>
     </div>
   );
 }
