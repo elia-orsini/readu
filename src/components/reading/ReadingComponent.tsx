@@ -63,6 +63,7 @@ export default function ReadingComponent({
       userId: currentUser || "",
       createdAt: new Date().toISOString(),
     };
+    setHighlights([...highlights, highlight]);
 
     try {
       await fetch("/api/highlights", {
@@ -72,7 +73,6 @@ export default function ReadingComponent({
           highlight,
         }),
       });
-      setHighlights([...highlights, highlight]);
       setSelection(null);
     } catch (error) {
       console.error("Error saving highlight:", error);
