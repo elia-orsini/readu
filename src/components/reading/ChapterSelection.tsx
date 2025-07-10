@@ -17,14 +17,14 @@ export default function ChapterSelection({
       </label>
       <select
         onChange={(e) => handleChapterChange(e.target.value)}
-        value={currentChapter?.id.S || ""}
+        value={currentChapter?.id || ""}
         className="focus:border-foreground/60 focus:ring-foreground/60 w-full rounded-lg border border-[var(--foreground)] bg-[var(--background)] p-2 opacity-80 hover:bg-secondary focus:outline-none"
       >
         {chapters.map((chapter: any) => (
-          <option key={chapter.date.S} value={chapter.id.S}>
-            {chapter.date.S === new Date().toLocaleDateString("en-CA")
+          <option key={chapter.date} value={chapter.id}>
+            {chapter.date === new Date().toLocaleDateString("en-CA")
               ? "Today"
-              : format(parseISO(chapter.date.S), "do MMMM")}
+              : format(parseISO(chapter.date), "do MMMM")}
           </option>
         ))}
       </select>

@@ -21,7 +21,7 @@ export default function MarkAsReadButtons({
   useEffect(() => {
     try {
       const today = new Date().toLocaleDateString("en-CA");
-      const chapter = chapters.Items.find((chapter: any) => chapter.date.S === today);
+      const chapter = chapters.Items.find((chapter: any) => chapter.date === today);
 
       if (chapter) {
         setTodayChapter(chapter);
@@ -38,7 +38,7 @@ export default function MarkAsReadButtons({
       members.forEach((member) => {
         initialStatus[member] =
           statusData.Items?.some(
-            (item: any) => item.person.S === member && item.chapterId.S === todayChapter.id.S
+            (item: any) => item.person.S === member && item.chapterId === todayChapter.id
           ) || false;
       });
 
@@ -54,7 +54,7 @@ export default function MarkAsReadButtons({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          chapterId: todayChapter?.id.S,
+          chapterId: todayChapter?.id,
           person: member,
           readingGroupId: readingGroupId,
         }),

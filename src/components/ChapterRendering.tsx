@@ -26,7 +26,7 @@ export default function ChapterRendering({
   useEffect(() => {
     try {
       const today = new Date().toLocaleDateString("en-CA");
-      const chapter = chapters.Items.find((chapter: any) => chapter.date.S === today);
+      const chapter = chapters.Items.find((chapter: any) => chapter.date === today);
 
       if (!chapter) {
         setError("No chapter scheduled for today");
@@ -43,7 +43,7 @@ export default function ChapterRendering({
   }, []);
 
   const handleChapterChange = (id: string) => {
-    const chapter = chapters.Items.find((chapter: Chapter) => chapter.id.S === id);
+    const chapter = chapters.Items.find((chapter: Chapter) => chapter.id === id);
     setCurrentChapter(chapter);
   };
 
@@ -95,8 +95,8 @@ export default function ChapterRendering({
           <div className="mb-6 mt-8">
             <h1 className="text-2xl font-bold text-foreground">{readingGroup.bookTitle}</h1>
             <p className="text-foreground opacity-60">
-              {format(parseISO(currentChapter?.date?.S || ""), "do MMMM")} -{" "}
-              {Math.floor(currentChapter?.estimatedMinutes?.N || 0)} minutes
+              {format(parseISO(currentChapter?.date || ""), "do MMMM")} -{" "}
+              {Math.floor(currentChapter?.estimatedMinutes || 0)} minutes
             </p>
           </div>
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { docClient } from "@/dynamo/client";
 import { PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+
+import { docClient } from "@/dynamo/client";
 
 export async function GET(request: NextRequest) {
   try {

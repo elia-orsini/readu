@@ -20,7 +20,7 @@ export default function ReadingComponent({
   useEffect(() => {
     const fetchHighlights = async () => {
       const highlightsResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_SITE_URL}/api/highlights?chapterId=${currentChapter.id.S}`
+        `${process.env.NEXT_PUBLIC_SITE_URL}/api/highlights?chapterId=${currentChapter.id}`
       );
 
       if (!highlightsResponse.ok) {
@@ -51,7 +51,7 @@ export default function ReadingComponent({
     if (!selection) return;
 
     const highlight = {
-      chapterId: currentChapter.id.S,
+      chapterId: currentChapter.id,
       highlightId: crypto.randomUUID(),
       readingGroupId: readingGroup.id,
       text: selection,
@@ -98,7 +98,7 @@ export default function ReadingComponent({
       )}
 
       {currentChapter &&
-        currentChapter.content.S.split("\n\n").map((para: string, i: number) => {
+        currentChapter.content.split("\n\n").map((para: string, i: number) => {
           if (!para.trim()) return null;
 
           const formattedPara = isChapterHeading(para)

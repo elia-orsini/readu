@@ -1,6 +1,6 @@
 import { docClient } from "@/dynamo/client";
 
-import { QueryCommand } from "@aws-sdk/client-dynamodb";
+import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -16,12 +16,11 @@ export async function GET(request: NextRequest) {
       IndexName: "readingGroupId-index",
       KeyConditionExpression: "readingGroupId = :groupId",
       ExpressionAttributeValues: {
-        ":groupId": { S: slug },
+        ":groupId": slug,
       },
     }) as any;
 
-    const chapterData = (await docClient.send(chapterCommand)) as any;
-
+    const chapterData = await docClient.send(chapterCommand);
     return NextResponse.json(chapterData);
   } catch (error) {
     console.error("Error fetching read status:", error);

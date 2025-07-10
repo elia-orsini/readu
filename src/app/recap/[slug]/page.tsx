@@ -1,34 +1,9 @@
 import Header from "@/components/header/Header";
 import RecapTable from "@/components/recap/RecapTable";
-import { docClient } from "@/dynamo/client";
-import { QueryCommand } from "@aws-sdk/client-dynamodb";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
 export default async function RecapPage({ params }: { params: Promise<{ slug: string }> }) {
   const slug = (await params).slug;
-
-  // Reading Group Data
-  const groupCommand = new QueryCommand({
-    TableName: "ReadingGroups",
-    KeyConditionExpression: "id = :id",
-    ExpressionAttributeValues: {
-      ":id": { S: slug },
-    },
-  }) as any;
-  const groupData = (await docClient.send(groupCommand)) as any;
-  if (!groupData.Items?.length) return notFound();
-
-  // Chapter Data
-  const chapterCommand = new QueryCommand({
-    TableName: "ReadingChapters",
-    IndexName: "readingGroupId-index",
-    KeyConditionExpression: "readingGroupId = :groupId",
-    ExpressionAttributeValues: {
-      ":groupId": { S: slug },
-    },
-  }) as any;
-  const chapterData = (await docClient.send(chapterCommand)) as any;
 
   return (
     <>
@@ -46,7 +21,7 @@ export default async function RecapPage({ params }: { params: Promise<{ slug: st
             </Link>
           </div>
 
-          <RecapTable chapterData={chapterData} groupData={groupData} slug={slug} />
+          <RecapTable slug={slug} />
         </div>
       </div>
     </>
