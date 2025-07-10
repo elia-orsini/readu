@@ -15,6 +15,10 @@ export default function HighlightButton({
   const { currentUser, setCurrentUser } = useWebsiteStore();
 
   const handleHighlightClick = () => {
+    if (window.getSelection) {
+      window.getSelection()?.removeAllRanges();
+    }
+
     if (!currentUser) {
       setShowPopup(true);
       return;
@@ -23,10 +27,6 @@ export default function HighlightButton({
     const currentUserIndex = readingGroupMembers.indexOf(currentUser);
     if (currentUserIndex !== -1) {
       onHighlight(highlightsColours[currentUserIndex].cssVar, "");
-    }
-
-    if (window.getSelection) {
-      window.getSelection()?.removeAllRanges();
     }
   };
 
