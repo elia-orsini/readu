@@ -53,6 +53,7 @@ export default function ReadingComponent({
     const highlight = {
       chapterId: currentChapter.id.S,
       highlightId: crypto.randomUUID(),
+      readingGroupId: readingGroup.id,
       text: selection,
       color,
       note,

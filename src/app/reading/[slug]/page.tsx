@@ -53,13 +53,23 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
 
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="bg-[var(--background)] p-4">
-            <div className="flex items-center">
-              <Link
-                href={`/recap/${slug}`}
-                className="ml-auto flex items-center rounded-lg border border-foreground bg-[var(--background)] px-4 py-2 text-sm text-[var(--foreground)] transition-all hover:bg-secondary focus:outline-none focus:ring-gray-300 sm:text-base"
-              >
-                Recap
-              </Link>
+            <div className="flex flex-row gap-x-3">
+              <div className="ml-auto flex items-center">
+                <Link
+                  href={`/notes/${slug}`}
+                  className="flex items-center rounded-lg border border-foreground bg-[var(--background)] px-4 py-2 text-sm text-[var(--foreground)] transition-all hover:bg-secondary focus:outline-none focus:ring-gray-300 sm:text-base"
+                >
+                  Notes
+                </Link>
+              </div>
+              <div className="flex items-center">
+                <Link
+                  href={`/recap/${slug}`}
+                  className="ml-auto flex items-center rounded-lg border border-foreground bg-[var(--background)] px-4 py-2 text-sm text-[var(--foreground)] transition-all hover:bg-secondary focus:outline-none focus:ring-gray-300 sm:text-base"
+                >
+                  Recap
+                </Link>
+              </div>
             </div>
 
             <MarkAsReadButtons
