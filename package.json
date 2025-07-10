@@ -11,6 +11,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.777.0",
     "@aws-sdk/lib-dynamodb": "^3.33.0",
+    "@ducanh2912/next-pwa": "^10.2.9",
     "@gsap/react": "^2.1.2",
     "@gxl/epub-parser": "^2.0.4",
     "date-fns": "^4.1.0",
