@@ -30,7 +30,7 @@ export default function UploadComponent({
           <div className="flex justify-center text-sm text-gray-600">
             <label
               htmlFor="file-upload"
-              className="relative cursor-pointer rounded-md bg-white font-medium text-blue-600 focus-within:outline-none hover:text-blue-500"
+              className="relative cursor-pointer rounded-md bg-white font-bold text-black underline focus-within:outline-none"
             >
               <span>Upload an EPUB file</span>
               <input
