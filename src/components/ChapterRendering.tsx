@@ -16,7 +16,7 @@ export default function ChapterRendering({ slug }: { slug: string }) {
   useScrollPositionPersistence();
 
   const allChapters = useChaptersData(slug);
-  const readingGroup = useGroupData(slug)
+  const readingGroup = useGroupData(slug);
 
   const [todayChapter, setTodayChapter] = useState<Chapter | null>(null);
   const [currentChapter, setCurrentChapter] = useState<Chapter | null>(null);
@@ -103,7 +103,7 @@ export default function ChapterRendering({ slug }: { slug: string }) {
             </p>
           </div>
 
-          <ReadingComponent currentChapter={currentChapter} readingGroup={readingGroup} />
+          <ReadingComponent currentChapter={currentChapter!} readingGroup={readingGroup!} />
         </div>
       )}
     </div>

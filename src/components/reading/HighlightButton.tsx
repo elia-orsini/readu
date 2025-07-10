@@ -1,6 +1,6 @@
 import { highlightsColours } from "@/constants/constants";
 import { useWebsiteStore } from "@/store/useWebsiteStore";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function HighlightButton({
   onHighlight,
@@ -12,16 +12,7 @@ export default function HighlightButton({
   const [showPopup, setShowPopup] = useState(false);
   const { currentUser, setCurrentUser } = useWebsiteStore();
 
-  useEffect(() => {
-    const currentUser = localStorage.getItem("currentUser");
-
-    if (currentUser) {
-      setCurrentUser(currentUser);
-    }
-  }, [localStorage]);
-
   function saveCurrentUser(user: string) {
-    localStorage.setItem("currentUser", user);
     setCurrentUser(user);
   }
 
