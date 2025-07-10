@@ -23,7 +23,11 @@ export default function HighlightButton({
     }
 
     const currentUserIndex = readingGroupMembers.indexOf(currentUser);
+
     if (currentUserIndex !== -1) {
+      setCurrentUser(null);
+      setShowPopup(true);
+    } else {
       onHighlight(highlightsColours[currentUserIndex].cssVar, "", currentUser);
     }
   };
