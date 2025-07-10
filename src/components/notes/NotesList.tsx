@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 import LoadingSpinner from "../LoadingSpinner";
 import { Note } from "@/types/Note";
+import useChaptersData from "@/hooks/useChaptersData";
+import Chapter from "@/types/Chapter";
 
 export default function NotesList({ slug }: { slug: string }) {
-  const [data, setData] = useState<Note[] | null>(null);
+  const [notes, setNotes] = useState<Note[] | null>(null);
   const [isLoading, setLoading] = useState(true);
+  const chaptersData = useChaptersData(slug);
 
   useEffect(() => {
     const fetchHighlights = async () => {
@@ -19,16 +22,20 @@ export default function NotesList({ slug }: { slug: string }) {
       }
 
       const highlightsData = await highlightsResponse.json();
-
-      if (highlightsData.Items) {
-        setData(highlightsData.Items || []);
-      }
-
+      setNotes(highlightsData.Items || []);
       setLoading(false);
     };
 
     fetchHighlights();
-  }, []);
+  }, [slug]);
+
+  const notesByChapter = notes?.reduce((acc: Record<string, Note[]>, note) => {
+    if (!acc[note.chapterId]) {
+      acc[note.chapterId] = [];
+    }
+    acc[note.chapterId].push(note);
+    return acc;
+  }, {});
 
   if (isLoading)
     return (
@@ -37,21 +44,41 @@ export default function NotesList({ slug }: { slug: string }) {
       </div>
     );
 
-  if (!data) return <p>No profile data</p>;
+  if (!notes || !chaptersData) return <p className="text-sm">No notes found</p>;
 
   return (
-    <div className="flex flex-col gap-y-3">
-      {data.map((note: Note) => (
-        <div
-          key={note.highlightId}
-          className="bg-thirdiary-foreground rounded border border-foreground p-2 text-sm"
-        >
-          <p className="text-justify">{note.text.replace(/"/g, "").trim()}</p>
-          <p className="mt-4 opacity-70">
-            Highlited by <span className="capitalize">{note.userId}</span>
-          </p>
-        </div>
-      ))}
+    <div className="flex flex-col gap-y-6">
+      {Object.entries(notesByChapter || {}).map(([chapterId, chapterNotes]) => {
+        const chapter = chaptersData.find((c: Chapter) => c.id === chapterId);
+
+        return (
+          <div key={chapterId} className="pb-6 last:border-0">
+            {chapter && (
+              <h3 className="mb-4 text-lg font-bold">{chapter.title || `Chapter ${chapterId}`}</h3>
+            )}
+
+            <div className="flex flex-col gap-y-3">
+              {chapterNotes.map((note: Note) => (
+                <div
+                  key={note.highlightId}
+                  className="bg-thirdiary-foreground rounded border border-foreground p-2 text-sm"
+                >
+                  <p className="text-justify">{note.text.replace(/"/g, "").trim()}</p>
+                  <p className="mt-4">
+                    <span className="opacity-70">Highlighted by </span>
+                    <span
+                      className="rounded px-1 capitalize"
+                      style={{ backgroundColor: `var(--${note.color})` }}
+                    >
+                      {note.userId}
+                    </span>
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

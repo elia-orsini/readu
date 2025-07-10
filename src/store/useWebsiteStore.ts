@@ -27,6 +27,6 @@ export const useWebsiteStore = create<WebsiteStore>()(
       groupData: null,
       setGroupData: (groupData) => set({ groupData }),
     }),
-    { name: "website-state" }
+    { name: "readu-state" }
   )
 );

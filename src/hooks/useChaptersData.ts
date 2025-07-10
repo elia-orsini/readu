@@ -11,9 +11,7 @@ export default function useChaptersData(slug: string) {
           setAllChapters([]);
         }
       } else {
-        const chaptersResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_SITE_URL}/api/chapters?slug=${slug}`
-        );
+        const chaptersResponse = await fetch(`/api/chapters?slug=${slug}`);
         if (!chaptersResponse.ok) {
           throw new Error(`HTTP error! status: ${chaptersResponse.status}`);
         }
