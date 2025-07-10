@@ -33,10 +33,7 @@ export default function HighlightButton({
   const handleMemberSelect = (member: string, index: number) => {
     setCurrentUser(member);
 
-    const currentUserIndex = readingGroupMembers.indexOf(member);
-    if (currentUserIndex !== -1) {
-      onHighlight(highlightsColours[currentUserIndex].cssVar, "");
-    }
+    onHighlight(highlightsColours[index].cssVar, "");
 
     setShowPopup(false);
   };
