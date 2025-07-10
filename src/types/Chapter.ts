@@ -5,4 +5,5 @@ export default interface Chapter {
   date: string;
   content: string;
   estimatedMinutes: number;
+  readingGroupId: string;
 }

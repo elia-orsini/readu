@@ -8,15 +8,15 @@ import { useScrollPositionPersistence } from "@/hooks/useScrollPositionPersisten
 import ChapterSelection from "./reading/ChapterSelection";
 import ReadingComponent from "./reading/ReadingComponent";
 import { highlightsColours } from "@/constants/constants";
+import MarkAsReadButtons from "./MarkAsReadButtons";
+import useChaptersData from "@/hooks/useChaptersData";
+import useGroupData from "@/hooks/useGroupData";
 
-export default function ChapterRendering({
-  chapters,
-  readingGroup,
-}: {
-  chapters: any;
-  readingGroup: any;
-}) {
+export default function ChapterRendering({ slug }: { slug: string }) {
   useScrollPositionPersistence();
+
+  const allChapters = useChaptersData(slug);
+  const readingGroup = useGroupData(slug)
 
   const [todayChapter, setTodayChapter] = useState<Chapter | null>(null);
   const [currentChapter, setCurrentChapter] = useState<Chapter | null>(null);
@@ -24,27 +24,24 @@ export default function ChapterRendering({
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    try {
-      const today = new Date().toLocaleDateString("en-CA");
-      const chapter = chapters.Items.find((chapter: any) => chapter.date === today);
+    if (!allChapters.length || !readingGroup) return;
 
-      if (!chapter) {
-        setError("No chapter scheduled for today");
-      } else {
-        setTodayChapter(chapter);
-        setCurrentChapter(chapter);
-      }
-    } catch (err) {
-      setError("Failed to load reading schedule");
-      console.error(err);
-    } finally {
-      setLoading(false);
+    const today = new Date().toLocaleDateString("en-CA");
+    const chapter = allChapters.find((chapter: any) => chapter.date === today);
+
+    if (!chapter) {
+      setError("No chapter scheduled for today");
+    } else {
+      setTodayChapter(chapter);
+      setCurrentChapter(chapter);
     }
-  }, []);
+
+    setLoading(false);
+  }, [allChapters]);
 
   const handleChapterChange = (id: string) => {
-    const chapter = chapters.Items.find((chapter: Chapter) => chapter.id === id);
-    setCurrentChapter(chapter);
+    const chapter = allChapters.find((chapter: Chapter) => chapter.id === id);
+    setCurrentChapter(chapter || null);
   };
 
   const returnToToday = () => {
@@ -63,9 +60,15 @@ export default function ChapterRendering({
         </div>
       ) : (
         <div>
+          <MarkAsReadButtons
+            chapters={allChapters}
+            members={readingGroup!.members}
+            readingGroupId={readingGroup!.id}
+          />
+
           <ChapterSelection
             handleChapterChange={handleChapterChange}
-            chapters={chapters.Items}
+            chapters={allChapters}
             currentChapter={currentChapter}
           />
 
@@ -81,7 +84,7 @@ export default function ChapterRendering({
           </div>
 
           <div className="flex flex-row gap-x-6">
-            {readingGroup.members.map((member: string, i: number) => (
+            {readingGroup!.members.map((member: string, i: number) => (
               <div key={`${member}_${i}`} className="flex flex-row gap-x-1.5">
                 <div
                   className="my-auto h-[15px] w-[15px] rounded-full border border-foreground"
@@ -93,7 +96,7 @@ export default function ChapterRendering({
           </div>
 
           <div className="mb-6 mt-8">
-            <h1 className="text-2xl font-bold text-foreground">{readingGroup.bookTitle}</h1>
+            <h1 className="text-2xl font-bold text-foreground">{readingGroup!.bookTitle}</h1>
             <p className="text-foreground opacity-60">
               {format(parseISO(currentChapter?.date || ""), "do MMMM")} -{" "}
               {Math.floor(currentChapter?.estimatedMinutes || 0)} minutes

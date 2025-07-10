@@ -1,6 +1,5 @@
 import ChapterRendering from "@/components/ChapterRendering";
 import Header from "@/components/header/Header";
-import MarkAsReadButtons from "@/components/MarkAsReadButtons";
 import EndMessage from "@/components/reading/EndMessage";
 import GoBackUpButton from "@/components/reading/GoBackUpButton";
 import { Metadata } from "next";
@@ -10,43 +9,6 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
   const slug = (await params).slug;
 
   try {
-    // Reading Group Data
-    const readingGroupResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_SITE_URL}/api/reading-group?slug=${slug}`
-    );
-    if (!readingGroupResponse.ok) {
-      throw new Error(`HTTP error! status: ${readingGroupResponse.status}`);
-    }
-    const groupData = await readingGroupResponse.json();
-
-    // Chapters Data
-    const chaptersResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_SITE_URL}/api/chapters?slug=${slug}`
-    );
-    if (!chaptersResponse.ok) {
-      throw new Error(`HTTP error! status: ${chaptersResponse.status}`);
-    }
-    const chapterData = await chaptersResponse.json();
-
-    // Read Status Data
-    const readStatusResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_SITE_URL}/api/status-data?slug=${slug}`
-    );
-    if (!readStatusResponse.ok) {
-      throw new Error(`HTTP error! status: ${readStatusResponse.status}`);
-    }
-    const statusData = await readStatusResponse.json();
-
-    if (!chapterData.Items?.length) {
-      return (
-        <div className="flex min-h-[50vh] items-center justify-center">
-          <div className="max-w-md rounded-lg border border-gray-200 bg-gray-50 p-4 text-center text-gray-600">
-            No chapters found for this reading group.
-          </div>
-        </div>
-      );
-    }
-
     return (
       <>
         <Header />
@@ -72,14 +34,7 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
 
-            <MarkAsReadButtons
-              chapters={chapterData}
-              members={groupData.members}
-              readingGroupId={groupData.id}
-              statusData={statusData}
-            />
-
-            <ChapterRendering chapters={chapterData} readingGroup={groupData} />
+            <ChapterRendering slug={slug} />
 
             <GoBackUpButton />
 
@@ -117,7 +72,6 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const slug = (await params).slug;
 
-  // Reading Group Data
   const readingGroupResponse = await fetch(
     `${process.env.NEXT_PUBLIC_SITE_URL}/api/reading-group?slug=${slug}`
   );
