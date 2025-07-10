@@ -10,7 +10,7 @@ export default function MarkAsReadButtons({
   members,
   readingGroupId,
 }: {
-  chapters: any;
+  chapters: Chapter[];
   members: string[];
   readingGroupId: string;
 }) {

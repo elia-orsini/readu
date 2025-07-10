@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import LoadingSpinner from "../LoadingSpinner";
+import { Note } from "@/types/Note";
 
 export default function NotesList({ slug }: { slug: string }) {
-  const [data, setData] = useState<any | null>(null);
+  const [data, setData] = useState<Note[] | null>(null);
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function NotesList({ slug }: { slug: string }) {
 
   return (
     <div className="flex flex-col gap-y-3">
-      {data.map((note: any) => (
+      {data.map((note: Note) => (
         <div
           key={note.highlightId}
           className="bg-thirdiary-foreground rounded border border-foreground p-2 text-sm"

@@ -20,7 +20,7 @@ export default function ChapterSelection({
         value={currentChapter?.id || ""}
         className="focus:border-foreground/60 focus:ring-foreground/60 w-full rounded-lg border border-[var(--foreground)] bg-[var(--background)] p-2 opacity-80 hover:bg-secondary focus:outline-none"
       >
-        {chapters.map((chapter: any) => (
+        {chapters.map((chapter: Chapter) => (
           <option key={chapter.date} value={chapter.id}>
             {chapter.date === new Date().toLocaleDateString("en-CA")
               ? "Today"

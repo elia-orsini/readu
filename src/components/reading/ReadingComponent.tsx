@@ -5,16 +5,19 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { highlightText } from "./HighlightedText";
 import { useWebsiteStore } from "@/store/useWebsiteStore";
+import { ReadingGroup } from "@/types/ReadingGroup";
+import Chapter from "@/types/Chapter";
+import { Note } from "@/types/Note";
 
 export default function ReadingComponent({
   currentChapter,
   readingGroup,
 }: {
-  currentChapter: any;
-  readingGroup: any;
+  currentChapter: Chapter;
+  readingGroup: ReadingGroup;
 }) {
   const [selection, setSelection] = useState<string | null>(null);
-  const [highlights, setHighlights] = useState<any[]>([]);
+  const [highlights, setHighlights] = useState<Note[]>([]);
   const { currentUser } = useWebsiteStore();
 
   useEffect(() => {
@@ -48,15 +51,15 @@ export default function ReadingComponent({
   };
 
   const handleHighlight = async (color: string, note?: string) => {
-    if (!selection) return;
+    if (!selection || !currentUser) return;
 
     const highlight = {
+      note: note || "",
       chapterId: currentChapter.id,
       highlightId: crypto.randomUUID(),
       readingGroupId: readingGroup.id,
       text: selection,
       color,
-      note,
       userId: currentUser,
       createdAt: new Date().toISOString(),
     };
@@ -79,8 +82,11 @@ export default function ReadingComponent({
   const applyHighlights = (text: string): string => {
     let highlightedText = text;
 
-    highlights?.forEach((hl: any) => {
-      highlightedText = highlightedText.replace(hl.text, highlightText(hl.text, hl.color, hl.id));
+    highlights?.forEach((hl: Note) => {
+      highlightedText = highlightedText.replace(
+        hl.text,
+        highlightText(hl.text, hl.color, hl.highlightId)
+      );
     });
 
     return highlightedText;

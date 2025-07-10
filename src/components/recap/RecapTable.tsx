@@ -8,6 +8,7 @@ import useChaptersData from "@/hooks/useChaptersData";
 import Chapter from "@/types/Chapter";
 import useStatusData from "@/hooks/useStatusData";
 import useGroupData from "@/hooks/useGroupData";
+import { Status } from "@/types/Status";
 
 export default function RecapTable({ slug }: { slug: string }) {
   const [chaptersPeopleMap, setChaptersPeopleMap] = useState<any>(null);
@@ -20,7 +21,7 @@ export default function RecapTable({ slug }: { slug: string }) {
   useEffect(() => {
     if (!statusData.length || !allChapters.length || !groupData) return;
 
-    const readingMap = statusData.reduce((acc: any, reading: any) => {
+    const readingMap = statusData.reduce((acc: any, reading: Status) => {
       const chapterId = reading.chapterId;
       const person = reading.person;
       acc[chapterId] = acc[chapterId] || {};
