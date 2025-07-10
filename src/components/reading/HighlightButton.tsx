@@ -15,9 +15,7 @@ export default function HighlightButton({
   const { currentUser, setCurrentUser } = useWebsiteStore();
 
   const handleHighlightClick = () => {
-    if (window.getSelection) {
-      window.getSelection()?.removeAllRanges();
-    }
+    window.getSelection()?.removeAllRanges();
 
     if (!currentUser) {
       setShowPopup(true);
@@ -70,7 +68,7 @@ export default function HighlightButton({
       <button
         onClick={handleHighlightClick}
         onTouchEnd={handleHighlightClick}
-        className={`fixed bottom-10 z-50 rounded border border-foreground !bg-black px-4 py-2 text-background sm:left-1/2 sm:-translate-x-1/2 sm:transform sm:text-foreground sm:bg-[var(--${
+        className={`fixed bottom-10 z-50 rounded border border-foreground !bg-black px-4 py-2 text-background sm:left-1/2 sm:-translate-x-1/2 sm:transform sm:text-background sm:bg-[var(--${
           currentUser
             ? highlightsColours[readingGroupMembers.indexOf(currentUser)].cssVar
             : highlightsColours[0].cssVar
