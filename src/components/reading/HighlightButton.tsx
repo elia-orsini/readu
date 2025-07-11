@@ -8,10 +8,12 @@ export default function HighlightButton({
   onHighlight,
   readingGroupMembers,
   selection,
+  setSelection,
 }: {
   onHighlight: (color: string, note: string, user: string) => Promise<void>;
   readingGroupMembers: string[];
   selection: string | null;
+  setSelection: any;
 }) {
   const [showPopup, setShowPopup] = useState(false);
   const { currentUser, setCurrentUser } = useWebsiteStore();
@@ -45,11 +47,14 @@ export default function HighlightButton({
       {showPopup && (
         <>
           <div
-            onClick={() => setShowPopup(false)}
+            onClick={() => {
+              setShowPopup(false);
+              setSelection(null);
+            }}
             className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50"
           />
-          <div className="fixed left-1/2 top-1/2 z-50 flex max-w-md -translate-x-1/2 -translate-y-1/2 transform flex-col gap-4 rounded-lg border border-foreground bg-background px-20 py-10 shadow-xl">
-            <p className="text-center text-lg">Who are you?</p>
+          <div className="fixed left-1/2 top-1/2 z-50 flex max-w-md -translate-x-1/2 -translate-y-1/2 transform flex-col gap-4 rounded-lg border border-foreground bg-background px-24 py-14 shadow-xl">
+            <p className="w-full text-nowrap text-center text-lg">Who are you?</p>
             <div className="flex flex-col gap-2">
               {readingGroupMembers.map((member, i) => (
                 <button

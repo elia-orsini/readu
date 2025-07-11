@@ -126,6 +126,7 @@ export default function ReadingComponent({
         onHighlight={handleHighlight}
         readingGroupMembers={readingGroup.members}
         selection={selection}
+        setSelection={setSelection}
       />
 
       {currentChapter &&
