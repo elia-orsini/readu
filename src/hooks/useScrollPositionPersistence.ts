@@ -2,19 +2,16 @@ import { useLayoutEffect } from "react";
 
 export const useScrollPositionPersistence = () => {
   useLayoutEffect(() => {
-    // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split("T")[0];
 
-    // Clean up old entries (keep only today's)
     Object.keys(localStorage).forEach((key) => {
       if (/^\d{4}-\d{2}-\d{2}$/.test(key) && key !== today) {
         localStorage.removeItem(key);
       }
     });
 
-    // Check for saved position for today
     const savedPosition = localStorage.getItem(today);
-    if (savedPosition) {
+    if (savedPosition && parseInt(savedPosition, 10) > 200) {
       setTimeout(() => {
         window.scrollTo(0, parseInt(savedPosition, 10));
       }, 300);
