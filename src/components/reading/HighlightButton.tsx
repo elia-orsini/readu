@@ -9,7 +9,7 @@ export default function HighlightButton({
   readingGroupMembers,
   selection,
 }: {
-  onHighlight: (color: string, note: string, user: string) => void;
+  onHighlight: (color: string, note: string, user: string) => Promise<void>;
   readingGroupMembers: string[];
   selection: string | null;
 }) {
@@ -34,14 +34,11 @@ export default function HighlightButton({
     }
   };
 
-  const handleMemberSelect = (member: string, index: number) => {
+  const handleMemberSelect = async (member: string, index: number) => {
     setCurrentUser(member);
     onHighlight(highlightsColours[index].cssVar, "", member);
     setShowPopup(false);
   };
-
-  console.log(selection);
-  
 
   return (
     <div>
@@ -62,8 +59,8 @@ export default function HighlightButton({
                     backgroundColor: `var(--${highlightsColours[i].cssVar})`,
                     color: "#000",
                   }}
-                  onClick={() => {
-                    handleMemberSelect(member, i);
+                  onClick={async () => {
+                    await handleMemberSelect(member, i);
                   }}
                 >
                   {member}
