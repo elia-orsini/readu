@@ -46,6 +46,12 @@ export default function ReadingComponent({
       setSelection(selection.toString());
       return;
     }
+
+    const popUp = document.getElementById("popUp");
+
+    if (!popUp) {
+      setSelection(null);
+    }
   };
 
   const handleHighlight = async (color: string, note: string, user: string) => {

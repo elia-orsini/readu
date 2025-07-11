@@ -45,7 +45,7 @@ export default function HighlightButton({
   return (
     <div>
       {showPopup && (
-        <>
+        <div id="popUp">
           <div
             onClick={() => {
               setShowPopup(false);
@@ -73,7 +73,7 @@ export default function HighlightButton({
               ))}
             </div>
           </div>
-        </>
+        </div>
       )}
 
       {!showPopup && selection && (
