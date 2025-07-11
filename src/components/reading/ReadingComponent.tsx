@@ -125,7 +125,6 @@ export default function ReadingComponent({
     <div
       className="prose prose-lg max-w-none text-foreground"
       onMouseUp={handleSelection}
-      onTouchEnd={handleSelection}
       onTouchCancel={() => setSelection(null)}
     >
       <HighlightButton
