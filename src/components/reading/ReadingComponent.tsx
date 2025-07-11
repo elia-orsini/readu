@@ -44,12 +44,13 @@ export default function ReadingComponent({
     const selection = window.getSelection();
     if (selection && selection.toString().trim()) {
       setSelection(selection.toString());
+      return;
     }
+
+    setSelection(null);
   };
 
   const handleHighlight = async (color: string, note: string, user: string) => {
-    console.log(selection);
-
     if (!selection) return;
 
     const highlight = {
@@ -96,7 +97,7 @@ export default function ReadingComponent({
       className="prose prose-lg max-w-none text-foreground"
       onMouseUp={handleSelection}
       onTouchEnd={handleSelection}
-      // onTouchCancel={() => setSelection(null)}
+      onTouchCancel={() => setSelection(null)}
     >
       <HighlightButton
         onHighlight={handleHighlight}

@@ -26,7 +26,7 @@ export default function HighlightButton({
 
     const currentUserIndex = readingGroupMembers.indexOf(currentUser);
 
-    if (currentUserIndex !== -1) {
+    if (currentUserIndex === -1) {
       setCurrentUser(null);
       setShowPopup(true);
     } else {
@@ -39,6 +39,9 @@ export default function HighlightButton({
     onHighlight(highlightsColours[index].cssVar, "", member);
     setShowPopup(false);
   };
+
+  console.log(selection);
+  
 
   return (
     <div>
