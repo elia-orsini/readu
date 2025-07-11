@@ -145,7 +145,18 @@ export default function ReadingComponent({
                   : "my-4 opacity-80"
               }`}
             >
-              <ReactMarkdown rehypePlugins={[rehypeRaw]}>{formattedPara}</ReactMarkdown>
+              <ReactMarkdown
+                components={{
+                  a: ({ node, href, ...props }) => {
+                    // Completely skip rendering if it's a citation link
+                    if (href?.includes("#part")) return null;
+                    return <a href={href} {...props} />;
+                  },
+                }}
+                rehypePlugins={[rehypeRaw]}
+              >
+                {formattedPara}
+              </ReactMarkdown>
               {isChapterHeading(para) && (
                 <span className="ml-auto mt-auto text-xs uppercase opacity-40">chapter</span>
               )}
