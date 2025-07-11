@@ -154,7 +154,7 @@ export default function ReadingComponent({
             >
               <ReactMarkdown
                 components={{
-                  a: ({ node, href, ...props }) => {
+                  a: ({ href, ...props }) => {
                     // Completely skip rendering if it's a citation link
                     if (href?.includes("#part")) return null;
                     return <a href={href} {...props} />;
