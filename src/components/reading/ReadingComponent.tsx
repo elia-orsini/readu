@@ -81,10 +81,35 @@ export default function ReadingComponent({
     let highlightedText = text;
 
     highlights?.forEach((hl: Note) => {
-      highlightedText = highlightedText.replace(
-        hl.text,
-        highlightText(hl.text, hl.color, hl.highlightId)
-      );
+      // Normalize both the highlight text and paragraph text by:
+      // 1. Removing extra whitespace
+      // 2. Handling different line break formats
+      const normalizedHighlight = hl.text.replace(/\s+/g, " ").trim();
+      const normalizedParagraph = text.replace(/\s+/g, " ").trim();
+
+      if (normalizedParagraph.includes(normalizedHighlight)) {
+        const startIndex = text.indexOf(normalizedHighlight);
+        if (startIndex !== -1) {
+          const originalHighlightText = text.substr(startIndex, normalizedHighlight.length);
+          highlightedText = highlightedText.replace(
+            originalHighlightText,
+            highlightText(originalHighlightText, hl.color, hl.highlightId)
+          );
+        }
+      } else {
+        const lines = hl.text.split("\n");
+
+        if (lines.length > 1) {
+          lines.forEach((line) => {
+            if (highlightedText.includes(line)) {
+              highlightedText = highlightedText.replace(
+                line,
+                highlightText(line, hl.color, hl.highlightId)
+              );
+            }
+          });
+        }
+      }
     });
 
     return highlightedText;
