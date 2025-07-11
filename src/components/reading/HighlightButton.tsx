@@ -48,7 +48,7 @@ export default function HighlightButton({
             onClick={() => setShowPopup(false)}
             className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50"
           />
-          <div className="absolute left-1/2 top-1/2 z-50 flex max-w-md -translate-x-1/2 -translate-y-1/2 transform flex-col gap-4 rounded-lg border border-foreground bg-background px-20 py-10 shadow-xl">
+          <div className="fixed left-1/2 top-1/2 z-50 flex max-w-md -translate-x-1/2 -translate-y-1/2 transform flex-col gap-4 rounded-lg border border-foreground bg-background px-20 py-10 shadow-xl">
             <p className="text-center text-lg">Who are you?</p>
             <div className="flex flex-col gap-2">
               {readingGroupMembers.map((member, i) => (
