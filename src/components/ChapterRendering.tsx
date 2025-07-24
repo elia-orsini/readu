@@ -22,7 +22,7 @@ export default function ChapterRendering({ slug }: { slug: string }) {
   const [todayChapter, setTodayChapter] = useState<Chapter | null>(null);
   const [currentChapter, setCurrentChapter] = useState<Chapter | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>("");
+  // const [error, setError] = useState<string>("");
 
   useEffect(() => {
     if (!allChapters.length || !readingGroup) return;
@@ -50,9 +50,9 @@ export default function ChapterRendering({ slug }: { slug: string }) {
     setCurrentChapter(todayChapter);
   };
 
-  if (error) {
-    return <p className="text-red-300">{error}</p>;
-  }
+  // if (error) {
+  //   return <p className="text-red-300">{error}</p>;
+  // }
 
   return (
     <div>
