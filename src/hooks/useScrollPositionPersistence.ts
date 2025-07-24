@@ -18,7 +18,9 @@ export const useScrollPositionPersistence = () => {
     }
 
     const handleScroll = () => {
-      localStorage.setItem(today, window.scrollY.toString());
+      if (window.scrollY > 20) {
+        localStorage.setItem(today, window.scrollY.toString());
+      }
     };
 
     // Throttle scroll events for better performance

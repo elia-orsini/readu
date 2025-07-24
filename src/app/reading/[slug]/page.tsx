@@ -1,6 +1,5 @@
 import ChapterRendering from "@/components/ChapterRendering";
 import Header from "@/components/header/Header";
-import EndMessage from "@/components/reading/EndMessage";
 import GoBackUpButton from "@/components/reading/GoBackUpButton";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -14,7 +13,7 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
         <Header />
 
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <div className="bg-[var(--background)] p-4">
+          <div className="flex min-h-dvh flex-col bg-[var(--background)] p-4">
             <div className="flex flex-row gap-x-3">
               <div className="ml-auto flex items-center">
                 <Link
@@ -38,9 +37,7 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
 
             <GoBackUpButton />
 
-            <EndMessage />
-
-            <footer className="border-t border-foreground bg-[var(--background)] py-12">
+            {/* <footer className="border-t border-foreground bg-[var(--background)] py-12">
               <div className="mx-auto max-w-6xl">
                 <div className="">
                   <p className="text-sm text-foreground">
@@ -48,7 +45,7 @@ export default async function ReadingPage({ params }: { params: Promise<{ slug: 
                   </p>
                 </div>
               </div>
-            </footer>
+            </footer> */}
           </div>
         </div>
       </>

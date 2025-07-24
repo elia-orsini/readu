@@ -78,6 +78,10 @@ export default function MarkAsReadButtons({
     }
   };
 
+  if (!chapterMap || !todayChapter) {
+    return <></>;
+  }
+
   return (
     <div className="rounded-lg">
       <p className="mb-2 mt-4 text-base font-medium text-[var(--foreground)] opacity-60">

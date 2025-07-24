@@ -11,6 +11,7 @@ import { highlightsColours } from "@/constants/constants";
 import MarkAsReadButtons from "./MarkAsReadButtons";
 import useChaptersData from "@/hooks/useChaptersData";
 import useGroupData from "@/hooks/useGroupData";
+import EndMessage from "./reading/EndMessage";
 
 export default function ChapterRendering({ slug }: { slug: string }) {
   useScrollPositionPersistence();
@@ -30,7 +31,8 @@ export default function ChapterRendering({ slug }: { slug: string }) {
     const chapter = allChapters.find((chapter: any) => chapter.date === today);
 
     if (!chapter) {
-      setError("No chapter scheduled for today");
+      setTodayChapter(null);
+      setCurrentChapter(null);
     } else {
       setTodayChapter(chapter);
       setCurrentChapter(chapter);
@@ -73,7 +75,7 @@ export default function ChapterRendering({ slug }: { slug: string }) {
           />
 
           <div className="mb-6 mt-2 flex flex-wrap items-center justify-between gap-4">
-            {currentChapter?.id !== todayChapter?.id && (
+            {currentChapter?.id !== todayChapter?.id && todayChapter && (
               <button
                 onClick={returnToToday}
                 className="rounded-lg border border-blue-300 bg-blue-50 px-4 py-2 text-sm text-blue-700 transition-all hover:bg-blue-100"
@@ -83,27 +85,44 @@ export default function ChapterRendering({ slug }: { slug: string }) {
             )}
           </div>
 
-          <div className="flex flex-row gap-x-6">
-            {readingGroup!.members.map((member: string, i: number) => (
-              <div key={`${member}_${i}`} className="flex flex-row gap-x-1.5">
-                <div
-                  className="my-auto h-[15px] w-[15px] rounded-full border border-foreground"
-                  style={{ backgroundColor: `var(--${highlightsColours[i].cssVar})` }}
-                />
-                <p>{member}</p>
-              </div>
-            ))}
-          </div>
+          {currentChapter && readingGroup && (
+            <div className="flex flex-row gap-x-6">
+              {readingGroup!.members.map((member: string, i: number) => (
+                <div key={`${member}_${i}`} className="flex flex-row gap-x-1.5">
+                  <div
+                    className="my-auto h-[15px] w-[15px] rounded-full border border-foreground"
+                    style={{ backgroundColor: `var(--${highlightsColours[i].cssVar})` }}
+                  />
+                  <p>{member}</p>
+                </div>
+              ))}
+            </div>
+          )}
 
-          <div className="mb-6 mt-8">
-            <h1 className="text-2xl font-bold text-foreground">{readingGroup!.bookTitle}</h1>
-            <p className="text-foreground opacity-60">
-              {format(parseISO(currentChapter?.date || ""), "do MMMM")} -{" "}
-              {Math.floor(currentChapter?.estimatedMinutes || 0)} minutes
+          {currentChapter && readingGroup && (
+            <div className="mb-6 mt-8">
+              <h1 className="text-2xl font-bold text-foreground">{readingGroup.bookTitle}</h1>
+              <p className="text-foreground opacity-60">
+                {format(parseISO(currentChapter?.date || ""), "do MMMM")} -{" "}
+                {Math.floor(currentChapter?.estimatedMinutes || 0)} minutes
+              </p>
+            </div>
+          )}
+
+          {!currentChapter && (
+            <p className="mt-10 text-foreground opacity-60">
+              No chapter found for today.
+              <br />
+              <br />
+              You can still select a chapter from the dropdown above.
             </p>
-          </div>
+          )}
 
-          <ReadingComponent currentChapter={currentChapter!} readingGroup={readingGroup!} />
+          {currentChapter && readingGroup && (
+            <ReadingComponent currentChapter={currentChapter} readingGroup={readingGroup} />
+          )}
+
+          {currentChapter && readingGroup && <EndMessage />}
         </div>
       )}
     </div>
