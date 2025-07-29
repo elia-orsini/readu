@@ -56,7 +56,7 @@ export default function ChapterRendering({ slug }: { slug: string }) {
 
   return (
     <div>
-      {loading ? (
+      {loading || !readingGroup ? (
         <div className="mt-6 flex text-sm text-foreground">
           <LoadingSpinner /> Loading...
         </div>
@@ -64,8 +64,8 @@ export default function ChapterRendering({ slug }: { slug: string }) {
         <div>
           <MarkAsReadButtons
             chapters={allChapters}
-            members={readingGroup!.members}
-            readingGroupId={readingGroup!.id}
+            members={readingGroup.members}
+            readingGroupId={readingGroup.id}
           />
 
           <ChapterSelection

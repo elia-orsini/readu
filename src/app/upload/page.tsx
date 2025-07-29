@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import UploadComponent from "@/components/file-upload/UploadComponent";
 import AlwaysWhiteHeader from "@/components/header/AlwaysWhiteHeader";
 import { format, parseISO } from "date-fns";
+import Link from "next/link";
 
 interface Chapter {
   id: string;
@@ -77,18 +78,25 @@ export default function UploadPage() {
 
     const filteredChapters = chapters
       .filter((c) => selectedChapters.has(c.id))
-      .map((c) => ({
-        ...c,
-        paragraphs: c.content
-          .replace(/\[\]\(null\)[\s\n]*/g, "")
-          .replace(/\[\]\(null\)/g, "")
-          .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-          .replace(/\[.*?\]/g, "")
+      .map((c) => {
+        const cleanedContent = c.content
+          // Remove [[PIC]](...) pattern
+          .replace(/\[\[PIC\]\]\([^)]+\)/g, "")
+          // Remove [PIC]
           .replace(/\[PIC\]/g, "")
-          .split("\n\n")
-          .filter((p) => p.trim().length > 0),
-        estimatedMinutes: Math.ceil(c.length / charsPerMinute),
-      }));
+          // Remove links like [text](url)
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+          // Remove any remaining square brackets (fallback)
+          .replace(/\[\]/g, "")
+          // Collapse multiple newlines
+          .replace(/\n{3,}/g, "\n\n");
+
+        return {
+          ...c,
+          paragraphs: cleanedContent.split("\n\n").filter((p) => p.trim().length > 0),
+          estimatedMinutes: Math.ceil(c.length / charsPerMinute),
+        };
+      });
 
     if (!filteredChapters.length) return [];
 
@@ -253,6 +261,8 @@ export default function UploadPage() {
     setPreviewSegments(createSegments());
   }, [chapters, selectedChapters, dailyMinutes, charsPerMinute]);
 
+  console.log(chapters);
+
   return (
     <>
       <AlwaysWhiteHeader />
@@ -368,8 +378,8 @@ export default function UploadPage() {
                               className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
                             <span className="block text-sm text-gray-700">
-                              {chapter.title} (~{Math.ceil(chapter.content.length / charsPerMinute)}{" "}
-                              min)
+                              {chapter.title}
+                              {/* (~{Math.ceil(chapter.content.length / charsPerMinute)}{" "}min) */}
                             </span>
                           </label>
                         </li>
@@ -458,6 +468,13 @@ export default function UploadPage() {
               </div>
             )}
           </div>
+
+          <p className="mt-2">
+            Don&apos;t have a book to read?{" "}
+            <Link className="underline" href="/">
+              See the books we have
+            </Link>
+          </p>
         </div>
       </div>
     </>

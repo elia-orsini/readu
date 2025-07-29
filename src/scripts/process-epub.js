@@ -20,9 +20,9 @@ async function processEPUB(filePath) {
       };
     });
 
-    chapters.filter((chapter) => chapter.content.length > 10);
+    const filteredChapters = chapters.filter((chapter) => chapter.content.length > 10);
 
-    return { title, chapters };
+    return { title, chapters: filteredChapters };
   } catch (error) {
     console.error("Error processing EPUB:", error);
     throw error;
