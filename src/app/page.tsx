@@ -13,7 +13,7 @@ export default async function IndexPage() {
             <div className="flex flex-col items-center md:flex-row">
               <Image
                 src="/landing-img.png"
-                alt="Hero Image"
+                alt="Readu Brings Friends Together Through Shared Reading Experiences. Annotate, Discuss, and Enjoy Books as a Group."
                 className="m-auto"
                 width={700}
                 height={500}
@@ -22,10 +22,10 @@ export default async function IndexPage() {
           </div>
         </section>
 
-        <section id="action button" className="flex border-y border-black py-20">
+        <section id="action button" className="flex flex-col border-y border-black py-20">
           <Link
             href="/upload"
-            className="mx-auto bg-black px-8 py-4 text-white transition-colors hover:bg-gray-800"
+            className="mx-auto rounded-md bg-black px-8 py-4 text-white transition-colors hover:bg-gray-800"
           >
             Start reading a book today
           </Link>
@@ -43,37 +43,37 @@ export default async function IndexPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-8 text-black md:grid-cols-2">
-              <div className="rounded-lg bg-gray-50 p-6">
-                <h3 className="mb-3 text-xl font-semibold">Shared Reading</h3>
-                <p className="text-gray-600">
+              <div className="rounded-md border border-black bg-gray-50 p-3 shadow-md">
+                <h3 className="text-xl font-semibold">Shared Reading</h3>
+                <p className="mb-6 text-gray-600">
                   Read the same book simultaneously with your friends, keeping everyone on the same
                   page.
                 </p>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-6">
-                <h3 className="mb-3 text-xl font-semibold">
+              <div className="rounded-md bg-gray-50 p-3 shadow-md">
+                <h3 className="text-xl font-semibold">
                   <span className="opacity-50">Group Annotations</span>{" "}
                   <span className="rounded bg-gray-700 px-2 py-1 text-base text-white">SOON</span>
                 </h3>
-                <p className="text-gray-600 opacity-50">
+                <p className="mb-6 text-gray-600 opacity-50">
                   Highlight and comment on passages together, creating a shared understanding.
                 </p>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-6">
-                <h3 className="mb-3 text-xl font-semibold">
+              <div className="rounded-md bg-gray-50 p-3 shadow-md">
+                <h3 className="text-xl font-semibold">
                   <span className="opacity-50">Live Discussions</span>{" "}
                   <span className="rounded bg-gray-700 px-2 py-1 text-base text-white">SOON</span>
                 </h3>
-                <p className="text-gray-600 opacity-50">
+                <p className="mb-6 text-gray-600 opacity-50">
                   Chat in real-time as you read, or schedule book club meetings within the app.
                 </p>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-6">
-                <h3 className="mb-3 text-xl font-semibold">Reading Progress</h3>
-                <p className="text-gray-600">
+              <div className="rounded-md border border-black bg-gray-50 p-3 shadow-md">
+                <h3 className="text-xl font-semibold">Reading Progress</h3>
+                <p className="mb-6 text-gray-600">
                   Track individual and group progress to stay motivated together.
                 </p>
               </div>
@@ -97,9 +97,9 @@ export default async function IndexPage() {
                     Start a new book today
                   </button>
                 </Link>
-                <button className="rounded-md border border-gray-300 px-6 py-3 text-gray-700 transition-colors hover:bg-gray-100">
+                {/* <button className="rounded-md border border-gray-300 px-6 py-3 text-gray-700 transition-colors hover:bg-gray-100">
                   See recommended classics →
-                </button>
+                </button> */}
               </div>
             </div>
 
@@ -109,7 +109,7 @@ export default async function IndexPage() {
                 (book) => (
                   <div
                     key={book}
-                    className="flex h-48 items-center justify-center rounded-lg bg-white p-6 shadow-sm"
+                    className="flex h-48 items-center justify-center rounded-md bg-white p-6 shadow-sm"
                   >
                     <span className="text-center font-medium text-gray-700">{book}</span>
                   </div>
