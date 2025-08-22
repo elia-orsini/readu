@@ -19,7 +19,10 @@ export default function RecapTable({ slug }: { slug: string }) {
   const groupData = useGroupData(slug);
 
   useEffect(() => {
-    if (!statusData.length || !allChapters.length || !groupData) return;
+    if (!statusData.length || !allChapters.length || !groupData) {
+      setLoading(false);
+      return;
+    }
 
     const readingMap = statusData.reduce((acc: any, reading: Status) => {
       const chapterId = reading.chapterId;
@@ -44,7 +47,7 @@ export default function RecapTable({ slug }: { slug: string }) {
       </div>
     );
 
-  if (!chaptersPeopleMap) return <p>No profile data</p>;
+  if (!chaptersPeopleMap) return <p>No Reading Data (yet)</p>;
 
   return (
     <div className="overflow-hidden rounded-xl border border-foreground bg-background shadow-sm">

@@ -15,7 +15,9 @@ export default function useStatusData(slug: string) {
           `${process.env.NEXT_PUBLIC_SITE_URL}/api/status-data?slug=${slug}`
         );
         if (!statusDataResponse.ok) {
-          throw new Error(`HTTP error! status: ${statusDataResponse.status}`);
+          setStatusData([]);
+          console.log(`HTTP error! status: ${statusDataResponse.status}`);
+          return
         }
         const chapterData = await statusDataResponse.json();
         setStatusData(chapterData.Items);

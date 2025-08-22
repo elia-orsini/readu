@@ -11,6 +11,7 @@
   --first-highlight: oklch(85.5% 0.138 181.071);
   --second-highlight: oklch(89.7% 0.196 126.665);
   --third-highlight: oklch(70.4% 0.191 22.216);
+  --fourth-highlight: oklch(67.3% 0.182 276.935)
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,7 +23,7 @@
 
     --first-highlight: oklch(51.1% 0.096 186.391);
     --second-highlight: oklch(53.2% 0.157 131.589);
-    --third-highlight: oklch(50.5% 0.213 27.518);
+    --fourth-highlight: oklch(67.3% 0.182 276.935)
   }
 }
 

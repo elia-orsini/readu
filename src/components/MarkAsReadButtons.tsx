@@ -87,14 +87,14 @@ export default function MarkAsReadButtons({
       <p className="mb-2 mt-4 text-base font-medium text-[var(--foreground)] opacity-60">
         Mark as read:
       </p>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-2 sm:gap-4">
         {chapterMap &&
           members.map((member) => (
             <button
               key={member}
               onClick={() => toggleReadStatus(member)}
               disabled={loadingStates[member]}
-              className={`relative min-w-[80px] rounded-lg border px-4 py-2 transition-all sm:min-w-[100px] ${
+              className={`relative min-w-[70px] rounded-lg border px-4 py-2 transition-all sm:min-w-[100px] ${
                 chapterMap[member]
                   ? "border-green-600 bg-green-100 text-green-800 shadow-inner hover:bg-green-200"
                   : "border-foreground bg-background hover:bg-secondary"
