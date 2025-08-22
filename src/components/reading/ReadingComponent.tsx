@@ -9,6 +9,19 @@ import { ReadingGroup } from "@/types/ReadingGroup";
 import Chapter from "@/types/Chapter";
 import { Note } from "@/types/Note";
 
+// Fallback UUID generator
+const generateUUID = () => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback for environments without crypto.randomUUID
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
 export default function ReadingComponent({
   currentChapter,
   readingGroup,
@@ -18,6 +31,7 @@ export default function ReadingComponent({
 }) {
   const [selection, setSelection] = useState<string | null>(null);
   const [highlights, setHighlights] = useState<Note[]>([]);
+  const [isProcessingHighlight, setIsProcessingHighlight] = useState(false);
   const { currentUser } = useWebsiteStore();
 
   useEffect(() => {
@@ -40,18 +54,66 @@ export default function ReadingComponent({
     fetchHighlights();
   }, [currentChapter]);
 
+  useEffect(() => {
+    // Add selection change listener for better mobile support
+    document.addEventListener('selectionchange', handleSelectionChange);
+    
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+    };
+  }, []);
+
   const handleSelection = () => {
+    // Don't process selection changes when we're processing a highlight
+    if (isProcessingHighlight) {
+      console.log('Skipping selection check - processing highlight');
+      return;
+    }
+
     const selection = window.getSelection();
+    console.log('=== Selection Check ===');
+    console.log('Window selection:', selection?.toString());
+    console.log('Current selection state:', selection);
+    
     if (selection && selection.toString().trim()) {
+      console.log('Setting selection to:', selection.toString());
       setSelection(selection.toString());
       return;
     }
 
-    const popUp = document.getElementById("popUp");
+    // Check if popup is open by looking for the backdrop element
+    const popupBackdrop = document.querySelector('[style*="z-index: 9999"]');
+    console.log('Popup backdrop found:', !!popupBackdrop);
 
-    if (!popUp) {
+    // Don't clear selection if we have a current selection state and no popup backdrop
+    // This prevents clearing selection when highlight button is clicked but popup hasn't appeared yet
+    if (!popupBackdrop && selection) {
+      console.log('No popup found, but keeping current selection state');
+      return;
+    }
+
+    if (!popupBackdrop) {
+      console.log('No popup found, clearing selection');
       setSelection(null);
     }
+  };
+
+  const handleTouchEnd = () => {
+    console.log('=== Touch End Event ===');
+    // Add a small delay to allow the selection to be established
+    setTimeout(() => {
+      console.log('Touch end timeout triggered');
+      handleSelection();
+    }, 100);
+  };
+
+  const handleSelectionChange = () => {
+    console.log('=== Selection Change Event ===');
+    // Listen for selection changes which works better on mobile
+    setTimeout(() => {
+      console.log('Selection change timeout triggered');
+      handleSelection();
+    }, 50);
   };
 
   const handleHighlight = async (color: string, note: string, user: string) => {
@@ -60,7 +122,7 @@ export default function ReadingComponent({
     const highlight = {
       note: note || "",
       chapterId: currentChapter.id,
-      highlightId: crypto.randomUUID(),
+      highlightId: generateUUID(),
       readingGroupId: readingGroup.id,
       text: selection,
       color,
@@ -123,8 +185,9 @@ export default function ReadingComponent({
 
   return (
     <div
-      className="prose prose-lg max-w-none text-foreground"
+      className="prose prose-lg max-w-none text-foreground select-text"
       onMouseUp={handleSelection}
+      onTouchEnd={handleTouchEnd}
       onTouchCancel={() => setSelection(null)}
     >
       <HighlightButton
@@ -132,6 +195,7 @@ export default function ReadingComponent({
         readingGroupMembers={readingGroup.members}
         selection={selection}
         setSelection={setSelection}
+        onProcessingStateChange={setIsProcessingHighlight}
       />
 
       {currentChapter &&
