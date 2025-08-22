@@ -65,9 +65,9 @@ export default function RecapTable({ slug }: { slug: string }) {
                 key={`${title}${Math.random()}`}
                 className="flex w-full flex-row border-t border-foreground p-4 text-sm font-medium transition-colors hover:bg-thirdiary sm:text-base"
               >
-                <div className="my-auto min-w-[25vw]">{`${format(parseISO(allChapters[i].date || ""), "do MMMM")}`}</div>
+                <div className="my-auto w-full mr-3 text-nowrap sm:min-w-[25vw]">{`${format(parseISO(allChapters[i].date || ""), "do MMMM")}`}</div>
 
-                <div className={`ml-auto flex flex-row gap-x-4 sm:gap-x-10`}>
+                <div className={`ml-auto flex flex-row gap-x-2 sm:gap-x-10`}>
                   {groupData &&
                     groupData.members.map((member: string) => (
                       <div className="flex justify-center" key={`${Math.random()}`}>

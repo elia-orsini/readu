@@ -9,7 +9,7 @@ export default function StatusBadge({ read, person }: { read: boolean; person: s
       disabled={read}
     >
       {read && (
-        <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white">
+        <span className="absolute -right-2 -top-2 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white">
           ✓
         </span>
       )}
